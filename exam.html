@@ -349,7 +349,17 @@
               
               // 如果有学习记录，更新记忆参数
               if (word.hanziItem) {
-                const updatedItem = updateAfterAnswer(word.hanziItem, !word.isWrong, nowMs);
+                // 创建一个干净的副本，避免序列化问题
+                const cleanItem = {
+                  id: word.hanziItem.id,
+                  char: word.hanziItem.char,
+                  lesson: word.hanziItem.lesson,
+                  last_ts: word.hanziItem.last_ts,
+                  stability_days: word.hanziItem.stability_days,
+                  ease: word.hanziItem.ease,
+                  history: word.hanziItem.history || []
+                };
+                const updatedItem = updateAfterAnswer(cleanItem, !word.isWrong, nowMs);
                 await learningManager.updateHanziItem(updatedItem);
               }
             }

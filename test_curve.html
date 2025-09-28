@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>测试 Curve.js</title>
+    <script src="js/curve.js"></script>
+</head>
+<body>
+    <h2>测试 Curve.js 功能</h2>
+    <div id="result"></div>
+
+    <script>
+        // 测试函数是否正确暴露
+        console.log('selectForSession function:', typeof selectForSession);
+        console.log('updateAfterAnswer function:', typeof updateAfterAnswer);
+        console.log('forgettingProb function:', typeof forgettingProb);
+
+        const resultDiv = document.getElementById('result');
+        
+        if (typeof selectForSession === 'function') {
+            // 创建测试数据
+            const testItems = [
+                { id: 'word_1', char: '我', lesson: 1, last_ts: Date.now() - 86400000 },
+                { id: 'word_2', char: '你', lesson: 1, last_ts: Date.now() - 86400000 * 3 },
+                { id: 'word_3', char: '他', lesson: 2, last_ts: Date.now() - 86400000 * 7 }
+            ];
+
+            // 测试选择函数
+            try {
+                const selected = selectForSession(testItems, 2);
+                resultDiv.innerHTML += '<p>✅ selectForSession 工作正常，选择了 ' + selected.length + ' 个项目</p>';
+                console.log('Selected items:', selected);
+            } catch (e) {
+                resultDiv.innerHTML += '<p>❌ selectForSession 出错: ' + e.message + '</p>';
+                console.error(e);
+            }
+        } else {
+            resultDiv.innerHTML = '<p>❌ selectForSession 函数未找到</p>';
+        }
+
+        // 测试其他函数
+        if (typeof forgettingProb === 'function') {
+            const testItem = { id: 'test', char: '测', lesson: 1, last_ts: Date.now() - 86400000 };
+            try {
+                const prob = forgettingProb(testItem, Date.now());
+                resultDiv.innerHTML += '<p>✅ forgettingProb 工作正常，遗忘概率: ' + prob.toFixed(3) + '</p>';
+            } catch (e) {
+                resultDiv.innerHTML += '<p>❌ forgettingProb 出错: ' + e.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>
