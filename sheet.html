@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <!-- Vue.js -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- 数据库和记忆曲线 -->
+  <script src="js/simpleDB.js"></script>
+  <script src="js/curve.js"></script>
   
   <style>
     @font-face {
@@ -92,6 +95,15 @@
         color: black;
       }
     }
+
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -163,12 +175,23 @@
             </div>
             
             <div class="text-center">
+              <button @click="smartRecommend" :disabled="isRecommending" class="btn btn-warning me-2 mb-2">
+                <i class="bi bi-lightbulb" v-if="!isRecommending"></i>
+                <i class="bi bi-hourglass-split spin" v-else></i>
+                {{ isRecommending ? '生成中...' : '智能推荐' }}
+              </button>
+              <br>
               <button @click="generateSheet" :disabled="selectedWords.length === 0" class="btn btn-success me-2">
                 <i class="bi bi-file-earmark-text"></i> 生成练习册
               </button>
               <button @click="printSheet" :disabled="selectedWords.length === 0" class="btn btn-primary">
                 <i class="bi bi-printer"></i> 打印练习册
               </button>
+            </div>
+            
+            <div class="alert alert-info mt-3" v-if="recommendationInfo">
+              <i class="bi bi-info-circle"></i>
+              {{ recommendationInfo }}
             </div>
           </div>
         </div>
@@ -197,10 +220,13 @@
           selectedLesson: -1,
           customWords: '',
           selectedWords: [],
-          allWords: []
+          allWords: [],
+          isRecommending: false,
+          recommendationInfo: ''
         }
       },
       async mounted() {
+        await initDB();
         await this.loadData();
         this.updateCurrentDate();
       },
@@ -292,6 +318,57 @@
           setTimeout(() => {
             window.print();
           }, 100);
+        },
+        async smartRecommend() {
+          this.isRecommending = true;
+          this.recommendationInfo = '';
+          
+          try {
+            // 获取学习记录
+            const hanziItems = await learningManager.getAllHanziItems();
+            const completedLessons = await learningManager.getCompletedLessons();
+            
+            if (hanziItems.length === 0) {
+              this.recommendationInfo = '暂无学习记录，请先在学习页面完成课程。';
+              return;
+            }
+            
+            const currentMaxLesson = completedLessons.length > 0 ? 
+              Math.max(...completedLessons.map(l => l.lessonId)) : -1;
+            
+            // 使用记忆曲线选择需要练习的汉字
+            const selectedItems = selectForSession(hanziItems, currentMaxLesson + 1);
+            
+            // 转换为汉字字符
+            const recommendedWords = [];
+            for (const item of selectedItems) {
+              const word = this.allWords.find(w => w.id === parseInt(item.id.split('_')[1]));
+              if (word) {
+                recommendedWords.push(word.content);
+              }
+            }
+            
+            if (recommendedWords.length === 0) {
+              this.recommendationInfo = '所有汉字记忆都很稳定，暂不需要额外练习。';
+              return;
+            }
+            
+            this.selectedWords = [...new Set(recommendedWords)]; // 去重
+            this.customWords = this.selectedWords.join('');
+            this.selectedLesson = -1;
+            
+            const forgetCount = selectedItems.filter(item => 
+              forgettingProb(item, Date.now()) >= 0.35
+            ).length;
+            
+            this.recommendationInfo = `已智能选择 ${this.selectedWords.length} 个汉字，其中 ${forgetCount} 个遗忘风险较高，建议重点练习。`;
+            
+          } catch (error) {
+            console.error('智能推荐失败:', error);
+            this.recommendationInfo = '推荐失败，请重试。';
+          } finally {
+            this.isRecommending = false;
+          }
         },
         updateCurrentDate() {
           const currentDate = new Date();

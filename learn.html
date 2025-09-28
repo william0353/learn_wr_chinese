@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <!-- Vue.js -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- 数据库和记忆曲线 -->
+  <script src="js/simpleDB.js"></script>
+  <script src="js/curve.js"></script>
   
   <style>
     @font-face {
@@ -43,6 +46,15 @@
 
     .lesson-selector {
       margin-bottom: 20px;
+    }
+
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -82,11 +94,35 @@
       <section class="py-5 text-center container">
         <!-- 课程选择器 -->
         <div class="lesson-selector">
-          <select v-model="currentLesson" @change="loadLesson" class="form-select w-25 mx-auto">
-            <option v-for="lesson in lessons" :key="lesson.id" :value="lesson.id">
-              第{{ lesson.id + 1 }}课
-            </option>
-          </select>
+          <div class="row justify-content-center align-items-center">
+            <div class="col-auto">
+              <select v-model="currentLesson" @change="loadLesson" class="form-select">
+                <option v-for="lesson in lessons" :key="lesson.id" :value="lesson.id">
+                  第{{ lesson.id + 1 }}课
+                </option>
+              </select>
+            </div>
+            <div class="col-auto">
+              <button 
+                v-if="!isCurrentLessonCompleted" 
+                @click="markLessonCompleted" 
+                :disabled="completingLesson"
+                class="btn btn-success">
+                <i class="bi bi-check-circle" v-if="!completingLesson"></i>
+                <i class="bi bi-hourglass-split spin" v-else></i>
+                {{ completingLesson ? '处理中...' : '完成本课' }}
+              </button>
+              <span v-else class="badge bg-success fs-6">
+                <i class="bi bi-check-circle"></i> 已完成
+              </span>
+            </div>
+          </div>
+          <div class="alert alert-info mt-2" v-if="!isCurrentLessonCompleted">
+            <small>
+              <i class="bi bi-info-circle"></i>
+              点击"完成本课"后，本课汉字将加入测试范围，系统会根据记忆曲线智能安排复习。
+            </small>
+          </div>
         </div>
 
         <div class="row py-lg-5">
@@ -162,13 +198,16 @@
           },
           selectedIndex: 0,
           allWords: [],
-          audioErrorMessage: ''
+          audioErrorMessage: '',
+          isCurrentLessonCompleted: false,
+          completingLesson: false
         }
       },
       async mounted() {
+        await initDB(); // 初始化数据库
         await this.loadData();
         this.checkUrlParams();
-        this.loadLesson();
+        await this.loadLesson();
       },
       methods: {
         async loadData() {
@@ -200,7 +239,7 @@
             ];
           }
         },
-        loadLesson() {
+        async loadLesson() {
           if (this.lessons.length > 0) {
             const lesson = this.lessons[this.currentLesson];
             this.currentWords = [];
@@ -225,6 +264,9 @@
             if (this.currentWords.length > 0) {
               this.selectWord(this.currentWords[0], 0);
             }
+            
+            // 检查当前课程是否已完成
+            await this.checkLessonCompletion();
           }
         },
         selectWord(word, index) {
@@ -235,6 +277,38 @@
         audioError(event) {
           this.audioErrorMessage = '音频文件暂未准备';
           console.log('音频加载失败:', event.target.src);
+        },
+        async checkLessonCompletion() {
+          try {
+            this.isCurrentLessonCompleted = await learningManager.isLessonCompleted(this.currentLesson);
+          } catch (error) {
+            console.error('检查课程完成状态失败:', error);
+          }
+        },
+        async markLessonCompleted() {
+          this.completingLesson = true;
+          try {
+            // 标记课程为已完成
+            await learningManager.markLessonCompleted(this.currentLesson);
+            
+            // 为当前课程的所有汉字创建学习记录
+            const promises = this.currentWords.map(async (word) => {
+              await learningManager.createHanziItem(word.id, word.content, this.currentLesson);
+            });
+            
+            await Promise.all(promises);
+            
+            this.isCurrentLessonCompleted = true;
+            
+            // 显示成功消息
+            alert(`第${this.currentLesson + 1}课已标记为完成！\n这些汉字现在会出现在测试中，系统将根据记忆曲线安排复习。`);
+            
+          } catch (error) {
+            console.error('标记课程完成失败:', error);
+            alert('操作失败，请重试。');
+          } finally {
+            this.completingLesson = false;
+          }
         },
         checkUrlParams() {
           const urlParams = new URLSearchParams(window.location.search);

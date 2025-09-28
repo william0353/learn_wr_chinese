@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
   <!-- Vue.js -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- 数据库和记忆曲线 -->
+  <script src="js/simpleDB.js"></script>
+  <script src="js/curve.js"></script>
   
   <style>
     @font-face {
@@ -29,6 +32,15 @@
     .warning-icon {
       color: #dc3545;
       font-size: 1.2rem;
+    }
+
+    .spin {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -68,14 +80,32 @@
       <section class="py-5 container">
         <div class="row py-lg-5">
           <div class="col-md-12 text-center mb-4">
-            <h2 class="chinese-text">汉字听写测试</h2>
+            <h2 class="chinese-text">智能汉字听写测试</h2>
+            <p class="text-muted">
+              <i class="bi bi-lightbulb"></i>
+              系统根据记忆曲线智能选择需要复习的汉字，优先测试容易遗忘的内容。
+            </p>
             <p class="text-muted">使用方法：不要让孩子看到屏幕，听写本页汉字。家长可以解释。</p>
             <p class="text-muted">听写结束后，在结果列标注出回答错误的题目，然后点击提交保存结果</p>
-            <p class="text-warning">请务必上传真实结果，算法将使用该结果结合记忆曲线生成下一次测试内容</p>
+            <p class="text-warning">
+              <i class="bi bi-exclamation-triangle"></i>
+              请务必如实标记错误，系统将据此调整每个汉字的记忆参数和复习频率
+            </p>
             
-            <button @click="generateExam" class="btn btn-primary mb-3">
-              <i class="bi bi-arrow-clockwise"></i> 重新生成测试
+            <button @click="generateExam" :disabled="isGenerating" class="btn btn-primary mb-3">
+              <i class="bi bi-hourglass-split spin" v-if="isGenerating"></i>
+              <i class="bi bi-arrow-clockwise" v-else></i>
+              {{ isGenerating ? '生成中...' : '重新生成测试' }}
             </button>
+            
+            <div class="alert alert-info" v-if="examWords.length > 0 && !examWords[0].isRandom">
+              <i class="bi bi-info-circle"></i>
+              根据记忆曲线智能选择了 {{ examWords.length }} 个汉字进行测试
+            </div>
+            <div class="alert alert-warning" v-else-if="examWords.length > 0 && examWords[0].isRandom">
+              <i class="bi bi-exclamation-triangle"></i>
+              暂无学习记录，使用随机模式。请先在学习页面完成课程。
+            </div>
           </div>
 
           <div class="col-md-12">
@@ -85,6 +115,7 @@
                   <th>序号</th>
                   <th>汉字</th>
                   <th>发音</th>
+                  <th>遗忘概率</th>
                   <th>结果（标注错误）</th>
                 </tr>
               </thead>
@@ -99,6 +130,14 @@
                     </audio>
                     <br>
                     <small class="text-muted">{{ word.rsrv_txt_1 }}</small>
+                  </td>
+                  <td class="align-middle">
+                    <span v-if="word.forgettingProb !== undefined" 
+                          :class="getProbabilityClass(word.forgettingProb)"
+                          class="badge">
+                      {{ (word.forgettingProb * 100).toFixed(0) }}%
+                    </span>
+                    <span v-else class="text-muted">-</span>
                   </td>
                   <td class="align-middle">
                     <div class="form-check">
@@ -192,7 +231,10 @@
       data() {
         return {
           allWords: [],
-          examWords: []
+          examWords: [],
+          hanziItems: [],
+          currentMaxLesson: 0,
+          isGenerating: false
         }
       },
       computed: {
@@ -204,8 +246,9 @@
         }
       },
       async mounted() {
+        await initDB();
         await this.loadData();
-        this.generateExam();
+        await this.generateExam();
       },
       methods: {
         async loadData() {
@@ -229,9 +272,56 @@
               { id: 10, content: '土', rsrv_txt_1: 'tǔ' }
             ];
           }
+          
+          // 加载汉字学习记录
+          try {
+            this.hanziItems = await learningManager.getAllHanziItems();
+            // 获取当前最高完成课程
+            const completedLessons = await learningManager.getCompletedLessons();
+            this.currentMaxLesson = completedLessons.length > 0 ? 
+              Math.max(...completedLessons.map(l => l.lessonId)) : -1;
+          } catch (error) {
+            console.error('加载学习记录失败:', error);
+          }
         },
-        generateExam() {
-          // 随机选择10个汉字用于测试
+        async generateExam() {
+          this.isGenerating = true;
+          
+          try {
+            // 如果没有学习记录，使用随机模式
+            if (this.hanziItems.length === 0) {
+              this.generateRandomExam();
+              return;
+            }
+            
+            // 使用记忆曲线算法选择测试内容
+            const selectedItems = selectForSession(this.hanziItems, this.currentMaxLesson + 1);
+            
+            if (selectedItems.length === 0) {
+              this.generateRandomExam();
+              return;
+            }
+            
+            // 根据选中的项目找到对应的单词数据
+            this.examWords = selectedItems.map(item => {
+              const word = this.allWords.find(w => w.id === parseInt(item.id.split('_')[1]));
+              return {
+                ...word,
+                hanziItem: item, // 保存对应的学习记录
+                isWrong: false,
+                forgettingProb: forgettingProb(item, Date.now()) // 显示遗忘概率
+              };
+            }).filter(w => w.id); // 过滤掉找不到的单词
+            
+          } catch (error) {
+            console.error('生成测试失败:', error);
+            this.generateRandomExam();
+          } finally {
+            this.isGenerating = false;
+          }
+        },
+        generateRandomExam() {
+          // 随机选择模式（备用）
           const validWords = this.allWords.filter(word => 
             word.content && word.content.trim() !== '' && word.rsrv_txt_1
           );
@@ -239,38 +329,66 @@
           const shuffled = [...validWords].sort(() => 0.5 - Math.random());
           this.examWords = shuffled.slice(0, 10).map(word => ({
             ...word,
-            isWrong: false
+            isWrong: false,
+            isRandom: true
           }));
         },
-        submitExam() {
-          // 在真实环境中，这里会将结果提交到后端
-          const results = this.examWords.map(word => ({
-            word_id: word.id,
-            content: word.content,
-            result: !word.isWrong
-          }));
-          
-          console.log('测试结果:', results);
-          
-          // 保存到本地存储作为示例
-          const examHistory = JSON.parse(localStorage.getItem('examHistory') || '[]');
-          examHistory.push({
-            date: new Date().toISOString(),
-            results: results,
-            correct: this.correctCount,
-            wrong: this.wrongCount
-          });
-          localStorage.setItem('examHistory', JSON.stringify(examHistory));
-          
-          // 关闭模态框
-          const modal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
-          modal.hide();
-          
-          // 显示成功消息
-          alert(`测试结果已保存！\n正确：${this.correctCount}，错误：${this.wrongCount}`);
-          
-          // 重新生成测试
-          this.generateExam();
+        async submitExam() {
+          try {
+            const results = [];
+            const nowMs = Date.now();
+            
+            // 更新每个汉字的学习记录
+            for (const word of this.examWords) {
+              const result = {
+                word_id: word.id,
+                content: word.content,
+                result: !word.isWrong
+              };
+              results.push(result);
+              
+              // 如果有学习记录，更新记忆参数
+              if (word.hanziItem) {
+                const updatedItem = updateAfterAnswer(word.hanziItem, !word.isWrong, nowMs);
+                await learningManager.updateHanziItem(updatedItem);
+              }
+            }
+            
+            console.log('测试结果:', results);
+            
+            // 保存到本地存储用于统计
+            const examHistory = JSON.parse(localStorage.getItem('examHistory') || '[]');
+            examHistory.push({
+              date: new Date().toISOString(),
+              results: results,
+              correct: this.correctCount,
+              wrong: this.wrongCount,
+              usedMemoryCurve: !this.examWords[0]?.isRandom
+            });
+            localStorage.setItem('examHistory', JSON.stringify(examHistory));
+            
+            // 关闭模态框
+            const modal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+            modal.hide();
+            
+            // 显示成功消息
+            const message = `测试结果已保存！\n正确：${this.correctCount}，错误：${this.wrongCount}\n\n` +
+              `系统已根据答题情况调整每个汉字的记忆参数，下次测试将更加精准。`;
+            alert(message);
+            
+            // 重新生成测试
+            await this.generateExam();
+            
+          } catch (error) {
+            console.error('提交测试失败:', error);
+            alert('提交失败，请重试。');
+          }
+        },
+        getProbabilityClass(prob) {
+          if (prob >= 0.7) return 'bg-danger';
+          if (prob >= 0.5) return 'bg-warning';
+          if (prob >= 0.3) return 'bg-success';
+          return 'bg-secondary';
         },
         audioError(event) {
           console.log('音频加载失败:', event.target.src);

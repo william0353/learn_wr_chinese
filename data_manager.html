@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学习数据管理 - 汉字学习</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="js/simpleDB.js"></script>
+    <script src="js/curve.js"></script>
+    
+    <style>
+        @font-face {
+            font-family: 'kai';
+            src: url('kai.ttf') format('truetype');
+        }
+        .chinese-text {
+            font-family: 'kai', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand chinese-text" href="index.html">汉字学习</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="index.html">返回首页</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4" id="app">
+        <h2 class="chinese-text mb-4">
+            <i class="bi bi-database"></i> 学习数据管理
+        </h2>
+
+        <!-- 数据统计 -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-primary">{{ completedLessons.length }}</h3>
+                        <p class="text-muted mb-0">已完成课程</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-success">{{ hanziItems.length }}</h3>
+                        <p class="text-muted mb-0">学习汉字数</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-warning">{{ forgetfulWords }}</h3>
+                        <p class="text-muted mb-0">需要复习</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <h3 class="text-info">{{ totalTests }}</h3>
+                        <p class="text-muted mb-0">测试次数</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 汉字学习记录 -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="bi bi-list-ul"></i> 汉字学习记录</h5>
+            </div>
+            <div class="card-body">
+                <div v-if="hanziItems.length === 0" class="text-center text-muted py-4">
+                    暂无学习记录，请先在学习页面完成课程。
+                </div>
+                <div v-else>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>汉字</th>
+                                    <th>课程</th>
+                                    <th>稳定度(天)</th>
+                                    <th>易度</th>
+                                    <th>遗忘概率</th>
+                                    <th>测试次数</th>
+                                    <th>最后学习</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="item in displayedItems" :key="item.id">
+                                    <td class="chinese-text fs-5">{{ item.char }}</td>
+                                    <td>第{{ item.lesson + 1 }}课</td>
+                                    <td>{{ item.stability_days.toFixed(1) }}</td>
+                                    <td>{{ item.ease.toFixed(1) }}</td>
+                                    <td>
+                                        <span :class="getProbabilityClass(getForgetProb(item))" class="badge">
+                                            {{ (getForgetProb(item) * 100).toFixed(0) }}%
+                                        </span>
+                                    </td>
+                                    <td>{{ item.history ? item.history.length : 0 }}</td>
+                                    <td>{{ formatDate(item.last_ts) }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <nav v-if="totalPages > 1">
+                        <ul class="pagination pagination-sm justify-content-center">
+                            <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                                <button class="page-link" @click="currentPage = Math.max(1, currentPage - 1)">上一页</button>
+                            </li>
+                            <li v-for="page in visiblePages" :key="page" class="page-item" :class="{ active: page === currentPage }">
+                                <button class="page-link" @click="currentPage = page">{{ page }}</button>
+                            </li>
+                            <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                                <button class="page-link" @click="currentPage = Math.min(totalPages, currentPage + 1)">下一页</button>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据操作 -->
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="bi bi-gear"></i> 数据操作</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <button @click="exportData" class="btn btn-primary w-100">
+                            <i class="bi bi-download"></i> 导出学习数据
+                        </button>
+                        <small class="text-muted">将学习数据导出为JSON文件</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input type="file" ref="fileInput" @change="importData" accept=".json" style="display: none;">
+                        <button @click="$refs.fileInput.click()" class="btn btn-success w-100">
+                            <i class="bi bi-upload"></i> 导入学习数据
+                        </button>
+                        <small class="text-muted">从JSON文件恢复学习数据</small>
+                    </div>
+                </div>
+                <hr>
+                <div class="alert alert-danger">
+                    <h6><i class="bi bi-exclamation-triangle"></i> 危险操作</h6>
+                    <button @click="confirmReset" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> 重置所有数据
+                    </button>
+                    <small class="d-block mt-2">此操作将删除所有学习记录，无法恢复！</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    hanziItems: [],
+                    completedLessons: [],
+                    currentPage: 1,
+                    itemsPerPage: 10
+                }
+            },
+            computed: {
+                forgetfulWords() {
+                    return this.hanziItems.filter(item => 
+                        this.getForgetProb(item) >= 0.35
+                    ).length;
+                },
+                totalTests() {
+                    return this.hanziItems.reduce((sum, item) => 
+                        sum + (item.history ? item.history.length : 0), 0
+                    );
+                },
+                totalPages() {
+                    return Math.ceil(this.hanziItems.length / this.itemsPerPage);
+                },
+                displayedItems() {
+                    const start = (this.currentPage - 1) * this.itemsPerPage;
+                    const end = start + this.itemsPerPage;
+                    return this.hanziItems
+                        .sort((a, b) => this.getForgetProb(b) - this.getForgetProb(a))
+                        .slice(start, end);
+                },
+                visiblePages() {
+                    const pages = [];
+                    const start = Math.max(1, this.currentPage - 2);
+                    const end = Math.min(this.totalPages, this.currentPage + 2);
+                    for (let i = start; i <= end; i++) {
+                        pages.push(i);
+                    }
+                    return pages;
+                }
+            },
+            async mounted() {
+                await initDB();
+                await this.loadData();
+            },
+            methods: {
+                async loadData() {
+                    try {
+                        this.hanziItems = await learningManager.getAllHanziItems();
+                        this.completedLessons = await learningManager.getCompletedLessons();
+                    } catch (error) {
+                        console.error('加载数据失败:', error);
+                    }
+                },
+                getForgetProb(item) {
+                    return forgettingProb(item, Date.now());
+                },
+                getProbabilityClass(prob) {
+                    if (prob >= 0.7) return 'bg-danger';
+                    if (prob >= 0.5) return 'bg-warning';
+                    if (prob >= 0.3) return 'bg-success';
+                    return 'bg-secondary';
+                },
+                formatDate(timestamp) {
+                    if (!timestamp) return '-';
+                    const date = new Date(timestamp);
+                    return date.toLocaleDateString('zh-CN');
+                },
+                async exportData() {
+                    try {
+                        const data = {
+                            hanziItems: this.hanziItems,
+                            completedLessons: this.completedLessons,
+                            exportDate: new Date().toISOString(),
+                            version: '1.0'
+                        };
+                        
+                        const blob = new Blob([JSON.stringify(data, null, 2)], {
+                            type: 'application/json'
+                        });
+                        
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `hanzi_learning_data_${new Date().toISOString().split('T')[0]}.json`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        
+                        alert('数据导出成功！');
+                    } catch (error) {
+                        console.error('导出失败:', error);
+                        alert('导出失败，请重试。');
+                    }
+                },
+                async importData(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+                    
+                    try {
+                        const text = await file.text();
+                        const data = JSON.parse(text);
+                        
+                        if (!data.hanziItems || !data.completedLessons) {
+                            alert('文件格式错误，请选择正确的学习数据文件。');
+                            return;
+                        }
+                        
+                        if (confirm('导入数据将覆盖现有的所有学习记录，确定继续吗？')) {
+                            // 清除现有数据
+                            await learningManager.resetAllData();
+                            
+                            // 导入新数据
+                            await db.bulkPut('hanziItems', data.hanziItems);
+                            await db.bulkPut('completedLessons', data.completedLessons);
+                            
+                            // 重新加载数据
+                            await this.loadData();
+                            
+                            alert('数据导入成功！');
+                        }
+                    } catch (error) {
+                        console.error('导入失败:', error);
+                        alert('导入失败，请检查文件格式。');
+                    } finally {
+                        event.target.value = ''; // 清除文件选择
+                    }
+                },
+                async confirmReset() {
+                    const confirmation = prompt('此操作将删除所有学习数据！\n请输入 "重置" 来确认：');
+                    if (confirmation === '重置') {
+                        try {
+                            await learningManager.resetAllData();
+                            await this.loadData();
+                            alert('所有数据已重置！');
+                        } catch (error) {
+                            console.error('重置失败:', error);
+                            alert('重置失败，请重试。');
+                        }
+                    }
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

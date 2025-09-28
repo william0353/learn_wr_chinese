@@ -102,6 +102,9 @@
           <li class="nav-item">
             <a class="nav-link" href="usage_guide.html">使用说明</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="data_manager.html">数据管理</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -199,6 +202,58 @@
           <div class="col-md-3 mb-4">
             <div class="stat-number">{{ studyDays }}</div>
             <p class="text-muted">学习天数</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Memory Curve Explanation -->
+    <section class="py-5 bg-light">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-10 mx-auto text-center">
+            <h2 class="chinese-text mb-4">
+              <i class="bi bi-graph-up"></i> 智能记忆曲线算法
+            </h2>
+            <p class="lead text-muted mb-4">
+              本系统采用科学的记忆曲线算法，根据每个汉字的学习历史智能安排复习时机，提高学习效率。
+            </p>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <i class="bi bi-clock-history text-primary mb-3" style="font-size: 2rem;"></i>
+                    <h5>遗忘曲线跟踪</h5>
+                    <p class="text-muted">系统记录每个汉字的学习时间和答题结果，计算遗忘概率。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <i class="bi bi-target text-success mb-3" style="font-size: 2rem;"></i>
+                    <h5>智能推荐</h5>
+                    <p class="text-muted">优先推荐容易遗忘的汉字进行复习，避免无效重复。</p>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <i class="bi bi-graph-up-arrow text-info mb-3" style="font-size: 2rem;"></i>
+                    <h5>动态调整</h5>
+                    <p class="text-muted">根据答题表现动态调整每个汉字的记忆参数和复习频率。</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="alert alert-warning mt-4">
+              <i class="bi bi-exclamation-triangle"></i>
+              <strong>数据存储说明：</strong>
+              所有学习数据（包括学习进度、记忆参数、测试历史）均保存在您的设备本地。
+              如果更换设备或清理浏览器缓存，将会丢失所有学习进度和记忆参数。
+              建议定期使用同一设备进行学习以保持数据连续性。
+            </div>
           </div>
         </div>
       </div>
