@@ -1,12 +1,13 @@
-type HanziItem = {
-  id: string;          // 唯一ID
-  char: string;        // 汉字
-  lesson: number;      // 所属课次
-  last_ts?: number;    // 上次测试时间 ms
-  stability_days?: number; // 记忆稳定度，默认1
-  ease?: number;       // 易度，默认2.0
-  history?: Array<{ts:number; correct:boolean}>;
-};
+// HanziItem 结构说明:
+// {
+//   id: string,          // 唯一ID
+//   char: string,        // 汉字
+//   lesson: number,      // 所属课次
+//   last_ts?: number,    // 上次测试时间 ms
+//   stability_days?: number, // 记忆稳定度，默认1
+//   ease?: number,       // 易度，默认2.0
+//   history?: Array<{ts:number, correct:boolean}>
+// }
 
 // ---- 参数可按需微调 ----
 const FORGET_THRESHOLD = 0.35;     // 遗忘概率阈值：>= 0.35 列为“应复习”
@@ -99,4 +100,13 @@ function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
 
   // 4) 最终截断到上限
   return result.slice(0, MAX_TOTAL_QUESTIONS);
+}
+
+// 将函数暴露到全局作用域，以便在 HTML 中使用
+if (typeof window !== 'undefined') {
+  window.forgettingProb = forgettingProb;
+  window.updateAfterAnswer = updateAfterAnswer;
+  window.selectForSession = selectForSession;
+  window.ensureDefaults = ensureDefaults;
+  window.daysBetween = daysBetween;
 }
