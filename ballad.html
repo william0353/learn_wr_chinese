@@ -1,0 +1,87 @@
+<!--
+ * @Author: Xing - Home computer
+ * @Date: 2023-01-04 22:35:33
+ * @LastEditors: hyman
+ * @LastEditTime: 2023-07-24 21:40:04
+ * @Description: ''
+-->
+{% extends "template.html" %}
+
+{% block title%} 歌谣 {% endblock %}
+{% block custom_js %}
+<style>
+  .image-with-text {
+  position: relative;
+  display: inline-block;
+}
+
+.image-with-text img {
+  width: 100%; /* Adjust the width as needed */
+  height: auto;
+  opacity: 0.8; /* 设置图片的透明度，0为完全透明，1为完全不透明 */
+}
+
+.text-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1; /* 文字的透明度，这里设置为1，完全不透明 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-overlay p {
+  text-align: center;
+  color: white; /* 设置文字颜色 */
+  font-size: 24px; /* 设置文字大小 */
+  /* 添加其他文字样式，如字体、行高等 */
+}
+
+.ballad_content{
+  line-height: 2;
+  letter-spacing: 0.5em; 
+  font-size: 5rem; 
+  font-family: 'kai'; 
+  color: {{res.content.rsrv_txt_2}};
+}
+
+@media print {
+  .image-with-text img {
+    opacity: 0.3; /* 设置打印时的图片透明度 */
+  }
+
+  .ballad_content{
+    color:black;
+  }
+}
+
+</style>
+{% endblock custom_js %}
+
+
+
+{% block body %}
+
+<main>
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5 image-with-text" >
+      <img src="{{ url_for('static', filename='img/word_ballad/') }}{{res.content.id}}.jpg">
+      <div class="text-overlay">
+        <h1 class="ballad_content">{{res.content.content |safe}}</h1></div>
+        
+
+    </div>
+    
+  </section>
+ 
+</main>
+<i>{{res.content.rsrv_txt_1}}</i>
+
+
+{% endblock %}
+
+{% block vue_obj %}
+{% endblock %}

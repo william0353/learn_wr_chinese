@@ -1,0 +1,89 @@
+<!--
+ * @Author: Xing - Home computer
+ * @Date: 2023-01-04 22:35:33
+ * @LastEditors: hyman
+ * @LastEditTime: 2023-06-04 21:33:45
+ * @Description: ''
+-->
+{% extends "template.html" %}
+
+{% block title%} Word Game {% endblock %}
+
+{% block body %}
+
+<main>
+
+  <section class="py-5 text-center container">
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1 class="fw-light">使用方法简介-汉字篇</h1>
+        <br>
+        <h5 style="text-align: left;">建议开始年龄：4岁+</h5>
+        <h5 style="text-align: left;">初期学习重点：忽略笔顺，建立图形记忆连接，培养成就感</h5>
+        <h5 style="text-align: left;">后期学习重点：理解笔画，组合偏旁部首，培养阅读能力</h5>
+        <hr>
+        <p style="text-align: left;">
+          这是面向父母的功能，请不要让孩子独自使用该功能。在初期学习期间，父母在最重要的工作，是帮助孩子对汉字产生兴趣，建立成就感，而不是追求数量。建立长期的自驱力对后期学习抽象汉字以及使用字典非常重要
+        <p>
+      <h5 style="text-align: left;">学习页面</h5>
+        <p style="text-align: left;">在学习页面，请以图片为主，引导孩子进行联想，尽量建立记忆连接，从而降低记忆难度。汉字比较抽象，在识字初期非常重要。当学完前20课后，我们开始把记忆连接从图片改成偏旁部首，进而学习更复杂的汉字。<i>推荐进度：根据孩子兴趣和记忆能力，每周1-2课</i></p>
+        
+     
+        <h5 style="text-align: left;">练习页面</h5>
+        <p style="text-align: left;">在练习页面，建议现根据声音对孩子进行听写，如果不记得了，再用图片提示。</p>
+        <p style="text-align: left;"></p>
+        <h5 style="text-align: left;">测试页面</h5>
+        <p style="text-align: left;">测试页面，则会根据每个用户单独的测试记录，推算易错汉字并生成测试内容。因此请为每个孩子开设单独账户，否则测试记录可能会过于简单，错失最佳记忆曲线。<i>推荐频率：根据孩子记忆情况，建议每隔一天进行一次</i></p>
+        
+     
+        <h5 style="text-align: left;">付费</h5>
+        <p style="text-align: left;">通过前十节免费课程，家长可以确定孩子是否适合继续通过我们的方法进行学习。解锁后续全部课程（永久）：199￥，为第二个孩子解锁全部课程（永久）：99￥</p>
+        <p style="text-align: left;">在网站内容完善之前，我们提供早鸟价格，解锁后续全部课程（永久）：99￥，为第二个孩子解锁全部课程（永久）：49￥</p>
+        <h5 style="text-align: left;">联系方式</h5>
+        <p style="text-align: left;">付款/入群/提供建议：添加微信 william0353</p> 
+        
+        <img src="{{ url_for('static', filename='img/wechat.png') }}"></img>
+          
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+
+  <div class="album py-5 bg-light">
+    <div class="container">
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for course in res %}
+        <div class="col">
+          <div class="card">
+
+            <img src="{{ url_for('static', filename='img/word_index/'+course.img) }}" class="card-img-top" height="300px"></img>
+            <h1 style="position: absolute;left:50%;top:50%;transform: translate(-50%, -50%);color: whitesmoke; font-size: 4rem;">第{{
+              course.id }}课</h1>
+
+            <div class="card-body">
+              <p class="card-text">{% for word in course.words %}{{ word.content }} {% endfor %}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ url_for('word_learn',course = course.id) }}"> 学习</a>
+                  <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ url_for('word_test',course = course.id) }}">练习</a>
+                  <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ url_for('word_learn',course = course.id) }}"> 测试</a>
+                </div>
+                <small class="text-muted">9 mins</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+</main>
+
+
+
+{% endblock %}

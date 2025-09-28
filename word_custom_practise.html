@@ -1,0 +1,85 @@
+<!--
+ * @Author: Xing - Home computer
+ * @Date: 2023-01-04 22:35:33
+ * @LastEditors: hyman
+ * @LastEditTime: 2023-07-10 22:55:11
+ * @Description: ''
+-->
+{% extends "template.html" %}
+
+{% block title%} Word Curves {% endblock %}
+{% block custom_js %}
+
+<script src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="https://fastly.jsdelivr.net/npm/echarts-stat@latest/dist/ecStat.min.js"></script>
+
+<script>
+  function generate_urls() {
+    href = ""
+    axios.post("{{ url_for('word_custom_practise') }}", {
+      words: $("#user_input").val(),
+
+    })
+      .then(function (response) {
+        console.log(response.data);
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+  }
+</script>
+
+<script>
+  function generate_url() {
+    input_ = $("#user_input").val().trim().replace("/", "").replace(",", "").replace(".", "").replace(";", "").replace("，", "").replace("。", "")
+
+    var regex = /^[\u4e00-\u9fa5]+$/;
+    if (!regex.test(input_)) {
+      alert("输入含有非汉字");
+      return;
+    }
+    else
+      if (input_.length > 48) {
+        alert("最多输入48个汉字");
+        return;
+
+      }
+      else {
+        href = "word_custom_sheet/" + input_
+        window.open(href)
+      }
+
+
+
+  }
+</script>
+
+
+
+
+{% endblock custom_js %}
+
+{% block body %}
+
+<main>
+  <section class="py-5 text-center container">
+    <h6>请输入需要练习的文字，可以用逗号/句号/空格分割，也可以不分割</h6>
+    <textarea id="user_input" rows="4" cols="40"></textarea>
+    <br>
+    <button class="btn btn-sm btn-outline-secondary" onclick="generate_url()"> 生成</button>
+
+
+
+
+  </section>
+
+</main>
+
+
+{% endblock %}
+
+{% block vue_obj %}
+
+{% endblock %}

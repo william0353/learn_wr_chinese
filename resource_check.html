@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>资源检查工具</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div class="container mt-4" id="app">
+        <h2>汉字学习资源检查工具</h2>
+        <p class="text-muted">检查图片和音频文件的可用性</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <h4>检查前10个汉字的资源</h4>
+                <button @click="checkResources" class="btn btn-primary mb-3">开始检查</button>
+                
+                <div v-if="checking" class="alert alert-info">
+                    <i class="spinner-border spinner-border-sm me-2"></i>
+                    正在检查资源...
+                </div>
+                
+                <div v-if="results.length > 0">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>汉字</th>
+                                <th>拼音</th>
+                                <th>图片</th>
+                                <th>音频</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="result in results" :key="result.id">
+                                <td>{{ result.id }}</td>
+                                <td class="fs-5">{{ result.content }}</td>
+                                <td>{{ result.pinyin }}</td>
+                                <td>
+                                    <span v-if="result.imageExists" class="text-success">✓</span>
+                                    <span v-else class="text-danger">✗</span>
+                                </td>
+                                <td>
+                                    <span v-if="result.audioExists" class="text-success">✓</span>
+                                    <span v-else class="text-danger">✗</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="mt-3">
+                        <div class="alert alert-success">
+                            <strong>统计:</strong> 
+                            图片可用: {{ availableImages }}/{{ results.length }}, 
+                            音频可用: {{ availableAudios }}/{{ results.length }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <h4>测试单个资源</h4>
+                <div class="mb-3">
+                    <label class="form-label">输入汉字ID:</label>
+                    <input v-model="testId" type="number" class="form-control" placeholder="如: 1">
+                    <button @click="testSingle" class="btn btn-secondary mt-2">测试</button>
+                </div>
+                
+                <div v-if="singleTest.id !== null" class="card">
+                    <div class="card-body">
+                        <h5>ID: {{ singleTest.id }}</h5>
+                        <div class="mb-2">
+                            <strong>图片测试:</strong>
+                            <div>
+                                <img :src="'img/word/' + singleTest.id + '.png'" 
+                                     style="max-width: 200px; max-height: 150px;" 
+                                     @load="singleTest.imageExists = true"
+                                     @error="singleTest.imageExists = false">
+                            </div>
+                            <small :class="singleTest.imageExists ? 'text-success' : 'text-danger'">
+                                {{ singleTest.imageExists ? '图片加载成功' : '图片加载失败' }}
+                            </small>
+                        </div>
+                        
+                        <div>
+                            <strong>音频测试:</strong>
+                            <div>
+                                <audio controls style="width: 100%;"
+                                       @loadeddata="singleTest.audioExists = true"
+                                       @error="singleTest.audioExists = false">
+                                    <source :src="'sound/' + singleTest.id + '.mp3'" type="audio/mpeg">
+                                </audio>
+                            </div>
+                            <small :class="singleTest.audioExists ? 'text-success' : 'text-danger'">
+                                {{ singleTest.audioExists ? '音频加载成功' : '音频加载失败' }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    checking: false,
+                    results: [],
+                    testId: 1,
+                    singleTest: {
+                        id: null,
+                        imageExists: false,
+                        audioExists: false
+                    },
+                    sampleWords: []
+                }
+            },
+            computed: {
+                availableImages() {
+                    return this.results.filter(r => r.imageExists).length;
+                },
+                availableAudios() {
+                    return this.results.filter(r => r.audioExists).length;
+                }
+            },
+            async mounted() {
+                await this.loadSampleWords();
+            },
+            methods: {
+                async loadSampleWords() {
+                    try {
+                        const response = await fetch('data/word.json');
+                        const data = await response.json();
+                        this.sampleWords = data.word.slice(0, 20); // 取前20个
+                    } catch (error) {
+                        console.error('加载数据失败:', error);
+                    }
+                },
+                async checkResources() {
+                    this.checking = true;
+                    this.results = [];
+                    
+                    for (const word of this.sampleWords.slice(0, 10)) {
+                        const result = {
+                            id: word.id,
+                            content: word.content,
+                            pinyin: word.rsrv_txt_1 || '',
+                            imageExists: false,
+                            audioExists: false
+                        };
+                        
+                        // 检查图片
+                        try {
+                            await this.checkImage(`img/word/${word.id}.png`);
+                            result.imageExists = true;
+                        } catch {
+                            result.imageExists = false;
+                        }
+                        
+                        // 检查音频
+                        try {
+                            await this.checkAudio(`sound/${word.id}.mp3`);
+                            result.audioExists = true;
+                        } catch {
+                            result.audioExists = false;
+                        }
+                        
+                        this.results.push(result);
+                    }
+                    
+                    this.checking = false;
+                },
+                checkImage(src) {
+                    return new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = resolve;
+                        img.onerror = reject;
+                        img.src = src;
+                    });
+                },
+                checkAudio(src) {
+                    return new Promise((resolve, reject) => {
+                        const audio = new Audio();
+                        audio.onloadeddata = resolve;
+                        audio.onerror = reject;
+                        audio.src = src;
+                    });
+                },
+                testSingle() {
+                    this.singleTest = {
+                        id: this.testId,
+                        imageExists: false,
+                        audioExists: false
+                    };
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>

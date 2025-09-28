@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <!-- 外边框 -->
+  <rect x="2" y="2" width="76" height="76" fill="none" stroke="#333" stroke-width="2"/>
+  
+  <!-- 中间的十字线 -->
+  <line x1="40" y1="2" x2="40" y2="78" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>
+  <line x1="2" y1="40" x2="78" y2="40" stroke="#ccc" stroke-width="1" stroke-dasharray="3,3"/>
+  
+  <!-- 对角线 -->
+  <line x1="2" y1="2" x2="78" y2="78" stroke="#eee" stroke-width="1" stroke-dasharray="2,2"/>
+  <line x1="78" y1="2" x2="2" y2="78" stroke="#eee" stroke-width="1" stroke-dasharray="2,2"/>
+</svg>
