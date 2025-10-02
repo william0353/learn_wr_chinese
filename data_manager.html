@@ -260,10 +260,21 @@
             methods: {
                 async loadData() {
                     try {
+                        console.log('开始加载学习数据...');
                         this.hanziItems = await learningManager.getAllHanziItems();
                         this.completedLessons = await learningManager.getCompletedLessons();
+                        
+                        console.log('数据加载完成:');
+                        console.log('- 汉字记录:', this.hanziItems.length);
+                        console.log('- 课程记录:', this.completedLessons.length);
+                        
+                        // 如果没有数据，给出提示
+                        if (this.hanziItems.length === 0 && this.completedLessons.length === 0) {
+                            console.log('暂无学习数据，请先在学习页面完成课程。');
+                        }
                     } catch (error) {
                         console.error('加载数据失败:', error);
+                        alert('加载学习数据失败，请刷新页面重试。');
                     }
                 },
                 getForgetProb(item) {
@@ -282,11 +293,26 @@
                 },
                 async exportData() {
                     try {
+                        // 重新从数据库加载最新数据，确保导出的是完整数据
+                        console.log('正在从数据库加载数据...');
+                        const freshHanziItems = await learningManager.getAllHanziItems();
+                        const freshCompletedLessons = await learningManager.getCompletedLessons();
+                        
+                        console.log('加载的汉字数据:', freshHanziItems.length);
+                        console.log('加载的课程数据:', freshCompletedLessons.length);
+                        
+                        if (freshHanziItems.length === 0 && freshCompletedLessons.length === 0) {
+                            alert('暂无学习数据可导出。请先在学习页面完成一些课程。');
+                            return;
+                        }
+                        
                         const data = {
-                            hanziItems: this.hanziItems,
-                            completedLessons: this.completedLessons,
+                            hanziItems: freshHanziItems,
+                            completedLessons: freshCompletedLessons,
                             exportDate: new Date().toISOString(),
-                            version: '1.0'
+                            version: '1.0',
+                            totalHanziCount: freshHanziItems.length,
+                            totalLessonCount: freshCompletedLessons.length
                         };
                         
                         const blob = new Blob([JSON.stringify(data, null, 2)], {
@@ -302,7 +328,7 @@
                         document.body.removeChild(a);
                         URL.revokeObjectURL(url);
                         
-                        alert('数据导出成功！');
+                        alert(`数据导出成功！\n导出了 ${freshHanziItems.length} 个汉字记录和 ${freshCompletedLessons.length} 个课程记录。`);
                     } catch (error) {
                         console.error('导出失败:', error);
                         alert('导出失败，请重试。');
