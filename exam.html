@@ -69,6 +69,9 @@
           <li class="nav-item">
             <a class="nav-link" href="usage_guide.html">使用说明</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="data_manager.html">数据管理</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -350,17 +353,38 @@
               // 如果有学习记录，更新记忆参数
               if (word.hanziItem) {
                 // 创建一个干净的副本，避免序列化问题
+                const cleanHistory = (word.hanziItem.history || []).map(h => ({
+                  ts: Number(h.ts),
+                  correct: Boolean(h.correct)
+                }));
+                
                 const cleanItem = {
-                  id: word.hanziItem.id,
-                  char: word.hanziItem.char,
-                  lesson: word.hanziItem.lesson,
-                  last_ts: word.hanziItem.last_ts,
-                  stability_days: word.hanziItem.stability_days,
-                  ease: word.hanziItem.ease,
-                  history: word.hanziItem.history || []
+                  id: String(word.hanziItem.id),
+                  char: String(word.hanziItem.char),
+                  lesson: Number(word.hanziItem.lesson),
+                  last_ts: Number(word.hanziItem.last_ts) || Date.now(),
+                  stability_days: Number(word.hanziItem.stability_days) || 1.0,
+                  ease: Number(word.hanziItem.ease) || 2.0,
+                  history: cleanHistory
                 };
+                
                 const updatedItem = updateAfterAnswer(cleanItem, !word.isWrong, nowMs);
-                await learningManager.updateHanziItem(updatedItem);
+                
+                // 确保更新后的对象也是干净的
+                const finalItem = {
+                  id: String(updatedItem.id),
+                  char: String(updatedItem.char),
+                  lesson: Number(updatedItem.lesson),
+                  last_ts: Number(updatedItem.last_ts),
+                  stability_days: Number(updatedItem.stability_days),
+                  ease: Number(updatedItem.ease),
+                  history: updatedItem.history.map(h => ({
+                    ts: Number(h.ts),
+                    correct: Boolean(h.correct)
+                  }))
+                };
+                
+                await learningManager.updateHanziItem(finalItem);
               }
             }
             
