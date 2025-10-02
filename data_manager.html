@@ -96,8 +96,12 @@
 
         <!-- 汉字学习记录 -->
         <div class="card mb-4">
-            <div class="card-header">
-                <h5><i class="bi bi-list-ul"></i> 汉字学习记录</h5>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-list-ul"></i> 汉字学习记录</h5>
+                <small class="text-muted">
+                    <i class="bi bi-info-circle"></i> 
+                    排序：遗忘概率 → 易度 → 最后学习时间
+                </small>
             </div>
             <div class="card-body">
                 <div v-if="hanziItems.length === 0" class="text-center text-muted py-4">
@@ -217,7 +221,26 @@
                     const start = (this.currentPage - 1) * this.itemsPerPage;
                     const end = start + this.itemsPerPage;
                     return this.hanziItems
-                        .sort((a, b) => this.getForgetProb(b) - this.getForgetProb(a))
+                        .sort((a, b) => {
+                            // 第一优先级：遗忘概率 (从高到低)
+                            const probA = this.getForgetProb(a);
+                            const probB = this.getForgetProb(b);
+                            if (Math.abs(probA - probB) > 0.01) { // 差值大于1%才认为有显著差异
+                                return probB - probA;
+                            }
+                            
+                            // 第二优先级：易度 (从低到高，易度低表示更难，需要优先关注)
+                            const easeA = a.ease || 2.0;
+                            const easeB = b.ease || 2.0;
+                            if (Math.abs(easeA - easeB) > 0.1) { // 差值大于0.1才认为有显著差异
+                                return easeA - easeB;
+                            }
+                            
+                            // 第三优先级：最后学习时间 (从早到晚，越久没学习的越靠前)
+                            const timeA = a.last_ts || 0;
+                            const timeB = b.last_ts || 0;
+                            return timeA - timeB;
+                        })
                         .slice(start, end);
                 },
                 visiblePages() {
