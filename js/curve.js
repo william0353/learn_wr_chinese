@@ -60,10 +60,10 @@ function updateAfterAnswer(item, correct, nowMs) {
 function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
   const items = allItems.map(ensureDefaults);
 
-  // 1) 当前课 5 个必出
-  const current = items
-    .filter(x => x.lesson === currentLesson)
-    .slice(0, 5); // 保护一下，防止数据异常
+  // 1) 最近一课的所有汉字必须被选中（不再限制只选5个）
+  const current = items.filter(x => x.lesson === currentLesson);
+  
+  console.log('最近一课(', currentLesson, ')的汉字数:', current.length);
 
   // 2) 旧课项：计算遗忘概率
   const prev = items.filter(x => x.lesson < currentLesson);
@@ -78,7 +78,9 @@ function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
     .sort((a,b) => b.p - a.p)
     .map(s => s.item);
 
-  // 2b) 若不足，上补“临近遗忘”的（按 p 高到低）
+  console.log('需要复习的旧课汉字数(遗忘概率>=35%):', must.length);
+
+  // 2b) 若不足，补充"临近遗忘"的（按 p 高到低）
   const picked = [...must];
   if (picked.length + current.length < MAX_TOTAL_QUESTIONS) {
     const remain = MAX_TOTAL_QUESTIONS - current.length - picked.length;
@@ -88,9 +90,10 @@ function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
       .slice(0, Math.min(NEAR_DUE_PICK, remain))
       .map(s => s.item);
     picked.push(...near);
+    console.log('补充临近遗忘的汉字数:', near.length);
   }
 
-  // 3) 合并并去重（防止同字重复）
+  // 3) 合并：最近一课的汉字放在前面，确保优先级
   const seen = new Set();
   const result = [...current, ...picked].filter(it => {
     if (seen.has(it.id)) return false;
@@ -98,7 +101,13 @@ function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
     return true;
   });
 
-  // 4) 最终截断到上限
+  // 4) 最终截断到上限（但尽量保留最近一课的所有汉字）
+  if (current.length >= MAX_TOTAL_QUESTIONS) {
+    console.log('最近一课汉字数已达上限，只返回最近一课的前', MAX_TOTAL_QUESTIONS, '个');
+    return current.slice(0, MAX_TOTAL_QUESTIONS);
+  }
+  
+  console.log('最终选中汉字数:', Math.min(result.length, MAX_TOTAL_QUESTIONS));
   return result.slice(0, MAX_TOTAL_QUESTIONS);
 }
 

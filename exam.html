@@ -297,8 +297,17 @@
               return;
             }
             
-            // 使用记忆曲线算法选择测试内容
-            const selectedItems = selectForSession(this.hanziItems, this.currentMaxLesson + 1);
+            // 确保最近一课的汉字被选中
+            // 使用当前最高完成课程作为"最近一课"
+            const latestLesson = this.currentMaxLesson;
+            
+            console.log('当前最高完成课程:', latestLesson);
+            console.log('总汉字记录数:', this.hanziItems.length);
+            
+            // 使用记忆曲线算法选择测试内容，传入最近课程编号
+            const selectedItems = selectForSession(this.hanziItems, latestLesson);
+            
+            console.log('算法选中的汉字数:', selectedItems.length);
             
             if (selectedItems.length === 0) {
               this.generateRandomExam();
@@ -315,6 +324,8 @@
                 forgettingProb: forgettingProb(item, Date.now()) // 显示遗忘概率
               };
             }).filter(w => w.id); // 过滤掉找不到的单词
+            
+            console.log('最终测试题数:', this.examWords.length);
             
           } catch (error) {
             console.error('生成测试失败:', error);

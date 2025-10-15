@@ -209,6 +209,7 @@
       async mounted() {
         await initDB(); // 初始化数据库
         await this.loadData();
+        await this.autoSelectLesson(); // 自动选择最近一课+1
         this.checkUrlParams();
         await this.loadLesson();
       },
@@ -240,6 +241,36 @@
               { id: 7, content: '山', course: 1, rsrv_txt_1: 'shān' },
               { id: 8, content: '云', course: 1, rsrv_txt_1: 'yún' }
             ];
+          }
+        },
+        async autoSelectLesson() {
+          try {
+            // 获取已完成的课程
+            const completedLessons = await learningManager.getCompletedLessons();
+            
+            if (completedLessons.length > 0) {
+              // 找到最大的课程ID
+              const maxCompletedLesson = Math.max(...completedLessons.map(l => l.lessonId));
+              
+              // 自动选择下一课（如果存在）
+              const nextLesson = maxCompletedLesson + 1;
+              if (nextLesson < this.lessons.length) {
+                this.currentLesson = nextLesson;
+                console.log(`自动跳转到第${nextLesson + 1}课`);
+              } else {
+                // 如果没有下一课，保持在最后一课
+                this.currentLesson = maxCompletedLesson;
+                console.log(`已是最后一课，停留在第${maxCompletedLesson + 1}课`);
+              }
+            } else {
+              // 没有完成任何课程，默认从第一课开始
+              this.currentLesson = 0;
+              console.log('从第1课开始学习');
+            }
+          } catch (error) {
+            console.error('自动选择课程失败:', error);
+            // 出错时默认第一课
+            this.currentLesson = 0;
           }
         },
         async loadLesson() {
