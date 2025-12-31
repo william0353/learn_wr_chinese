@@ -41,7 +41,7 @@
 	{
 		"id" : 2,
 		"content" : "是",
-		"course" : "",
+		"course" : 21,
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -79,7 +79,7 @@
 	{
 		"id" : 4,
 		"content" : "我",
-		"course" : 30,
+		"course" : 19,
 		"is_part" : 0,
 		"is_visual" : 0,
 		"part" : "",
@@ -155,7 +155,7 @@
 	{
 		"id" : 8,
 		"content" : "他",
-		"course" : "",
+		"course" : 20,
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -174,7 +174,7 @@
 	{
 		"id" : 9,
 		"content" : "有",
-		"course" : 22,
+		"course" : 20,
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -269,7 +269,7 @@
 	{
 		"id" : 14,
 		"content" : "来",
-		"course" : 24,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -421,7 +421,7 @@
 	{
 		"id" : 22,
 		"content" : "你",
-		"course" : "",
+		"course" : 20,
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -573,7 +573,7 @@
 	{
 		"id" : 30,
 		"content" : "和",
-		"course" : "",
+		"course" : 21,
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -611,7 +611,7 @@
 	{
 		"id" : 32,
 		"content" : "她",
-		"course" : "",
+		"course" : 20,
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -896,7 +896,7 @@
 	{
 		"id" : 47,
 		"content" : "去",
-		"course" : 24,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -1333,7 +1333,7 @@
 	{
 		"id" : 70,
 		"content" : "还",
-		"course" : 24,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -1561,7 +1561,7 @@
 	{
 		"id" : 82,
 		"content" : "无",
-		"course" : 23,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -3138,7 +3138,7 @@
 	{
 		"id" : 165,
 		"content" : "声",
-		"course" : 23,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -3860,7 +3860,7 @@
 	{
 		"id" : 203,
 		"content" : "听",
-		"course" : 22,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -4373,7 +4373,7 @@
 	{
 		"id" : 230,
 		"content" : "乐",
-		"course" : 20,
+		"course" : "",
 		"is_part" : 0,
 		"is_visual" : 0,
 		"part" : "",
@@ -4392,7 +4392,7 @@
 	{
 		"id" : 231,
 		"content" : "色",
-		"course" : 22,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -5266,7 +5266,7 @@
 	{
 		"id" : 277,
 		"content" : "金",
-		"course" : 20,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -5285,7 +5285,7 @@
 	{
 		"id" : 278,
 		"content" : "快",
-		"course" : 20,
+		"course" : "",
 		"is_part" : 0,
 		"is_visual" : 0,
 		"part" : "",
@@ -5551,7 +5551,7 @@
 	{
 		"id" : 292,
 		"content" : "远",
-		"course" : 22,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -5874,7 +5874,7 @@
 	{
 		"id" : 309,
 		"content" : "王",
-		"course" : 21,
+		"course" : "",
 		"is_part" : 1,
 		"is_visual" : 0,
 		"part" : 60,
@@ -6159,7 +6159,7 @@
 	{
 		"id" : 324,
 		"content" : "元",
-		"course" : 21,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -7014,7 +7014,7 @@
 	{
 		"id" : 369,
 		"content" : "近",
-		"course" : 23,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -8173,7 +8173,7 @@
 	{
 		"id" : 430,
 		"content" : "照",
-		"course" : 19,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -8249,7 +8249,7 @@
 	{
 		"id" : 434,
 		"content" : "古",
-		"course" : 20,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -8838,7 +8838,7 @@
 	{
 		"id" : 465,
 		"content" : "惊",
-		"course" : 24,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
@@ -11973,7 +11973,7 @@
 	{
 		"id" : 631,
 		"content" : "春",
-		"course" : 23,
+		"course" : "",
 		"is_part" : null,
 		"is_visual" : "\"\"",
 		"part" : "\"\"",
