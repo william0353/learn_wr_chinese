@@ -4,46 +4,77 @@
 //   char: string,        // 汉字
 //   lesson: number,      // 所属课次
 //   last_ts?: number,    // 上次测试时间 ms
-//   stability_days?: number, // 记忆稳定度，默认1
-//   ease?: number,       // 易度，默认2.0
+//   nextReviewAt?: number, // 下次复习时间戳 ms
+//   level?: number,      // 复习等级，0, 1, 2...
+//   mistakeCount?: number, // 累计错误次数
+//   isLeech?: boolean,   // 是否为难点词
 //   history?: Array<{ts:number, correct:boolean}>
 // }
 
-// ---- 参数可按需微调 ----
-const FORGET_THRESHOLD = 0.35;     // 遗忘概率阈值：>= 0.35 列为“应复习”
-const MAX_TOTAL_QUESTIONS = 15;    // 本次总题量上限
-const NEAR_DUE_PICK = 10;          // 不足时“临近遗忘”补充数量
+// ---- SRS 参数 ----
+const SRS_INTERVALS = [0, 3, 7, 15, 30, 60, 120, 240, 365];
+const MAX_TOTAL_QUESTIONS = 15; // 本次总题量上限
 
-function daysBetween(ms1, ms2) {
-  return Math.max(0, (ms2 - ms1) / (1000 * 60 * 60 * 24));
-}
-
+/**
+ * 确保数据项具有所有必要字段，用于迁移和兼容
+ */
 function ensureDefaults(item) {
-  if (item.stability_days == null) item.stability_days = 1.0;
-  if (item.ease == null) item.ease = 2.0;
+  if (item.level === undefined || item.level === null) item.level = 0;
+  if (item.mistakeCount === undefined || item.mistakeCount === null)
+    item.mistakeCount = 0;
+  if (item.isLeech === undefined || item.isLeech === null) item.isLeech = false;
+  if (item.nextReviewAt === undefined || item.nextReviewAt === null) {
+    // 迁移旧数据：如果没记录则设为现在，如果是很久以前学的也设为现在
+    item.nextReviewAt = item.last_ts || Date.now();
+  }
   if (!item.history) item.history = [];
   return item;
 }
 
-// 计算遗忘概率 P_forget = 1 - exp(-t/S)
+/**
+ * 计算遗忘概率（兼容旧 UI）
+ * 1.0 表示已到期或过期
+ * 0.5 表示还有不到 24 小时到期
+ * 0.0 表示还早
+ */
 function forgettingProb(item, nowMs) {
   ensureDefaults(item);
-  const last = item.last_ts ?? (nowMs - 24*3600*1000); // 没历史则视为一天前学过
-  const t = daysBetween(last, nowMs);
-  const S = Math.max(0.25, item.stability_days); // 稍作下限保护
-  const R = Math.exp(-t / S);
-  return 1 - R;
+  const diff = item.nextReviewAt - nowMs;
+  if (diff <= 0) return 1.0;
+
+  const oneDay = 24 * 3600 * 1000;
+  if (diff < oneDay) return 0.5;
+
+  return 0.0;
 }
 
-// 在一次测试后更新记忆参数
+/**
+ * 在一次测试后更新 SRS 参数
+ * @param {HanziItem} item
+ * @param {boolean} correct
+ * @param {number} nowMs
+ */
 function updateAfterAnswer(item, correct, nowMs) {
   ensureDefaults(item);
   if (correct) {
-    item.ease += 0.1;
-    item.stability_days *= (1 + 0.15 * item.ease); // 正确显著拉长间隔
+    // 答对了
+    item.level++;
+    item.mistakeCount = 0;
+    item.isLeech = false;
+
+    // 获取间隔，如果超出定义范围则使用最后一个间隔
+    const intervalDays =
+      item.level < SRS_INTERVALS.length
+        ? SRS_INTERVALS[item.level]
+        : SRS_INTERVALS[SRS_INTERVALS.length - 1];
+
+    item.nextReviewAt = nowMs + intervalDays * 24 * 60 * 60 * 1000;
   } else {
-    item.ease = Math.max(1.3, item.ease - 0.2);
-    item.stability_days = Math.max(0.5, item.stability_days * 0.5);
+    // 答错了
+    item.level = 0;
+    item.mistakeCount++;
+    item.isLeech = item.mistakeCount >= 3;
+    item.nextReviewAt = nowMs; // 答错后立即（今天）再次复习
   }
   item.last_ts = nowMs;
   item.history.push({ ts: nowMs, correct });
@@ -53,66 +84,31 @@ function updateAfterAnswer(item, correct, nowMs) {
 /**
  * 选出本次测试的题目
  * @param {HanziItem[]} allItems      全部字
- * @param {number} currentLesson      当前课次
+ * @param {number} currentLesson      当前课次（新逻辑主要参考 nextReviewAt，此参数保留兼容）
  * @param {number} nowMs              当前时间戳
  * @returns {HanziItem[]}             本次测试列表
  */
 function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
   const items = allItems.map(ensureDefaults);
 
-  // 1) 最近一课的所有汉字必须被选中（不再限制只选5个）
-  const current = items.filter(x => x.lesson === currentLesson);
-  
-  console.log('最近一课(', currentLesson, ')的汉字数:', current.length);
+  // 1) 基于 nextReviewAt 排序，越早复习的排越前面
+  const sorted = [...items].sort((a, b) => a.nextReviewAt - b.nextReviewAt);
 
-  // 2) 旧课项：计算遗忘概率
-  const prev = items.filter(x => x.lesson < currentLesson);
-  const scored = prev.map(x => ({
-    item: x,
-    p: forgettingProb(x, nowMs)
-  }));
+  // 2) 打印调试信息
+  const due = sorted.filter((it) => it.nextReviewAt <= nowMs);
+  console.log(`[SRS] 到期需复习: ${due.length} 个, 总库存: ${items.length} 个`);
 
-  // 2a) 必复习：p >= 阈值
-  const must = scored
-    .filter(s => s.p >= FORGET_THRESHOLD)
-    .sort((a,b) => b.p - a.p)
-    .map(s => s.item);
-
-  console.log('需要复习的旧课汉字数(遗忘概率>=35%):', must.length);
-
-  // 2b) 若不足，补充"临近遗忘"的（按 p 高到低）
-  const picked = [...must];
-  if (picked.length + current.length < MAX_TOTAL_QUESTIONS) {
-    const remain = MAX_TOTAL_QUESTIONS - current.length - picked.length;
-    const near = scored
-      .filter(s => s.p < FORGET_THRESHOLD)
-      .sort((a,b) => b.p - a.p)
-      .slice(0, Math.min(NEAR_DUE_PICK, remain))
-      .map(s => s.item);
-    picked.push(...near);
-    console.log('补充临近遗忘的汉字数:', near.length);
-  }
-
-  // 3) 合并：最近一课的汉字放在前面，确保优先级
-  const seen = new Set();
-  const result = [...current, ...picked].filter(it => {
-    if (seen.has(it.id)) return false;
-    seen.add(it.id);
-    return true;
-  });
-
-  // 4) 最终截断到上限（但尽量保留最近一课的所有汉字）
-  if (current.length >= MAX_TOTAL_QUESTIONS) {
-    console.log('最近一课汉字数已达上限，只返回最近一课的前', MAX_TOTAL_QUESTIONS, '个');
-    return current.slice(0, MAX_TOTAL_QUESTIONS);
-  }
-  
-  console.log('最终选中汉字数:', Math.min(result.length, MAX_TOTAL_QUESTIONS));
-  return result.slice(0, MAX_TOTAL_QUESTIONS);
+  // 3) 返回前 MAX_TOTAL_QUESTIONS 个
+  return sorted.slice(0, MAX_TOTAL_QUESTIONS);
 }
 
-// 将函数暴露到全局作用域，以便在 HTML 中使用
-if (typeof window !== 'undefined') {
+// 辅助函数
+function daysBetween(ms1, ms2) {
+  return Math.max(0, (ms2 - ms1) / (1000 * 60 * 60 * 24));
+}
+
+// 将函数暴露到全局作用域
+if (typeof window !== "undefined") {
   window.forgettingProb = forgettingProb;
   window.updateAfterAnswer = updateAfterAnswer;
   window.selectForSession = selectForSession;
