@@ -58,7 +58,13 @@ function updateAfterAnswer(item, correct, nowMs) {
   ensureDefaults(item);
   if (correct) {
     // 答对了
-    item.level++;
+    // 特殊情况：如果是第一次测试（历史为空）且当前等级为 0，说明是熟词，直接跳级到 Level 3 (约 15 天)
+    if (item.level === 0 && (!item.history || item.history.length === 0)) {
+      item.level = 3;
+    } else {
+      item.level++;
+    }
+
     item.mistakeCount = 0;
     item.isLeech = false;
 
