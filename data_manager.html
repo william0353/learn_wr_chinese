@@ -137,6 +137,7 @@
                     <th>状态</th>
                     <th>下次复习</th>
                     <th>最后学习</th>
+                    <th>操作</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -160,6 +161,22 @@
                     </td>
                     <td>{{ formatFullDate(item.nextReviewAt) }}</td>
                     <td>{{ formatDate(item.last_ts) }}</td>
+                    <td>
+                      <button
+                        @click="resetSRS(item)"
+                        class="btn btn-outline-warning btn-sm me-1"
+                        title="标记为忘了/重置进度"
+                      >
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                      </button>
+                      <button
+                        @click="deleteItem(item)"
+                        class="btn btn-outline-danger btn-sm"
+                        title="删除记录"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -461,6 +478,39 @@
               } catch (error) {
                 console.error("重置失败:", error);
                 alert("重置失败，请重试。");
+              }
+            }
+          },
+          async resetSRS(item) {
+            if (
+              confirm(
+                `确定要重置 "${item.char}" 的学习进度吗？这将把它标记为已遗忘。`,
+              )
+            ) {
+              try {
+                item.level = 0;
+                item.nextReviewAt = Date.now();
+                item.mistakeCount = 0;
+                item.isLeech = false;
+                // 不清除 history，保留学习痕迹，但重置状态
+                await learningManager.updateHanziItem(item);
+                await this.loadData();
+                alert("已重置进度");
+              } catch (error) {
+                console.error("重置失败:", error);
+                alert("重置失败: " + error.message);
+              }
+            }
+          },
+          async deleteItem(item) {
+            if (confirm(`确定要彻底删除 "${item.char}" 的学习记录吗？`)) {
+              try {
+                await learningManager.deleteHanziItem(item.id);
+                await this.loadData();
+                alert("已删除");
+              } catch (error) {
+                console.error("删除失败:", error);
+                alert("删除失败");
               }
             }
           },

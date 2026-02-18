@@ -12,7 +12,8 @@
 // }
 
 // ---- SRS 参数 ----
-const SRS_INTERVALS = [0, 3, 7, 15, 30, 60, 120, 240, 365];
+// 刚学完，第二天第三天也要学习
+const SRS_INTERVALS = [0, 1, 1, 3, 7, 15, 30, 60, 120, 180, 365];
 const MAX_TOTAL_QUESTIONS = 15; // 本次总题量上限
 
 /**
@@ -97,8 +98,18 @@ function updateAfterAnswer(item, correct, nowMs) {
 function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
   const items = allItems.map(ensureDefaults);
 
-  // 1) 基于 nextReviewAt 排序，越早复习的排越前面
-  const sorted = [...items].sort((a, b) => a.nextReviewAt - b.nextReviewAt);
+  // 1) 排序：优先选择没有历史记录的（从没测试过的），其次按 nextReviewAt 排序
+  const sorted = [...items].sort((a, b) => {
+    const aNew = !a.history || a.history.length === 0;
+    const bNew = !b.history || b.history.length === 0;
+
+    if (aNew !== bNew) {
+      return aNew ? -1 : 1; // 新词排前面
+    }
+
+    // 都不是新词或都是新词，按复习时间排序
+    return a.nextReviewAt - b.nextReviewAt;
+  });
 
   // 2) 打印调试信息
   const due = sorted.filter((it) => it.nextReviewAt <= nowMs);

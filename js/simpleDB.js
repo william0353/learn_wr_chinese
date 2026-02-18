@@ -38,6 +38,7 @@ class SimpleDB {
   }
 
   async getAll(storeName) {
+    if (!this.db) throw new Error("Database not initialized");
     const transaction = this.db.transaction([storeName], "readonly");
     const store = transaction.objectStore(storeName);
 
@@ -49,6 +50,7 @@ class SimpleDB {
   }
 
   async get(storeName, key) {
+    if (!this.db) throw new Error("Database not initialized");
     const transaction = this.db.transaction([storeName], "readonly");
     const store = transaction.objectStore(storeName);
 
@@ -60,17 +62,26 @@ class SimpleDB {
   }
 
   async put(storeName, data) {
+    if (!this.db) throw new Error("Database not initialized");
+
+    // 转换为普通对象，防止 Vue Proxy 导致的 DataCloneError
+    const plainData =
+      typeof data === "object" && data !== null
+        ? JSON.parse(JSON.stringify(data))
+        : data;
+
     const transaction = this.db.transaction([storeName], "readwrite");
     const store = transaction.objectStore(storeName);
 
     return new Promise((resolve, reject) => {
-      const request = store.put(data);
+      const request = store.put(plainData);
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => reject(request.error);
     });
   }
 
   async delete(storeName, key) {
+    if (!this.db) throw new Error("Database not initialized");
     const transaction = this.db.transaction([storeName], "readwrite");
     const store = transaction.objectStore(storeName);
 
@@ -82,6 +93,7 @@ class SimpleDB {
   }
 
   async getByIndex(storeName, indexName, key) {
+    if (!this.db) throw new Error("Database not initialized");
     const transaction = this.db.transaction([storeName], "readonly");
     const store = transaction.objectStore(storeName);
     const index = store.index(indexName);
@@ -94,12 +106,19 @@ class SimpleDB {
   }
 
   async bulkPut(storeName, dataArray) {
+    if (!this.db) throw new Error("Database not initialized");
     const transaction = this.db.transaction([storeName], "readwrite");
     const store = transaction.objectStore(storeName);
 
     const promises = dataArray.map((data) => {
+      // 转换为普通对象
+      const plainData =
+        typeof data === "object" && data !== null
+          ? JSON.parse(JSON.stringify(data))
+          : data;
+
       return new Promise((resolve, reject) => {
-        const request = store.put(data);
+        const request = store.put(plainData);
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => reject(request.error);
       });
@@ -108,8 +127,8 @@ class SimpleDB {
     return Promise.all(promises);
   }
 
-  // 清除所有数据（重置功能）
   async clearAll() {
+    if (!this.db) throw new Error("Database not initialized");
     const storeNames = ["hanziItems", "completedLessons"];
     const transaction = this.db.transaction(storeNames, "readwrite");
 
@@ -204,6 +223,11 @@ class HanziLearningManager {
   // 清除所有学习数据
   async resetAllData() {
     await this.db.clearAll();
+  }
+
+  // 删除汉字记录
+  async deleteHanziItem(id) {
+    await this.db.delete("hanziItems", id);
   }
 }
 
