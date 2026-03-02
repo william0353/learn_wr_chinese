@@ -384,7 +384,8 @@
               // 根据选中的项目找到对应的单词数据
               this.examWords = selectedItems
                 .map((item) => {
-                  const originalId = item.id.split("_")[1];
+                  const parts = item.id.split("_");
+                  const originalId = parts.slice(1).join("_");
                   const wordInfo = this.allItemsMap[originalId];
 
                   return {

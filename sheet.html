@@ -34,11 +34,11 @@
         background-image: url("img/tian_block.svg");
         display: inline-block;
         color: black;
-        width: 65px;
-        height: 65px;
-        font-size: 62px;
+        width: 55px;
+        height: 55px;
+        font-size: 53px;
         text-align: center;
-        line-height: 65px;
+        line-height: 55px;
         margin: 1px 0px 1px 0px;
         font-family: "kai";
         background-size: cover;
@@ -48,12 +48,12 @@
       .write_word {
         background-image: url("img/tian_block.svg");
         display: inline-block;
-        width: 65px;
-        height: 65px;
-        font-size: 62px;
+        width: 55px;
+        height: 55px;
+        font-size: 53px;
         color: lightgray;
         text-align: center;
-        line-height: 65px;
+        line-height: 55px;
         margin: 1px 0px 1px 0px;
         font-family: "kai";
         background-size: cover;
@@ -63,12 +63,12 @@
       .transparent_word {
         background-image: url("img/tian_block.svg");
         display: inline-block;
-        width: 65px;
-        height: 65px;
-        font-size: 62px;
+        width: 55px;
+        height: 55px;
+        font-size: 53px;
         color: rgba(0, 0, 0, 0);
         text-align: center;
-        line-height: 65px;
+        line-height: 55px;
         margin: 1px 0px 1px 0px;
         font-family: "kai";
         background-size: cover;
@@ -536,7 +536,8 @@
 
               for (const item of selectedItems.slice(0, 12)) {
                 // item.id 格式为 "lessonID_charID"
-                const originalCharId = item.id.split("_")[1];
+                const parts = item.id.split("_");
+                const originalCharId = parts.slice(1).join("_");
                 const wordInfo = this.allItemsMap[originalCharId];
                 if (wordInfo) {
                   recommendedWords.push(wordInfo.text);
