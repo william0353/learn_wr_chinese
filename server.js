@@ -27,16 +27,6 @@ app.use(express.static('.', {
   }
 }));
 
-// API路由 - 获取汉字数据
-app.get('/api/words', (req, res) => {
-  try {
-    const wordData = fs.readFileSync(path.join(__dirname, 'data', 'word.json'), 'utf8');
-    res.json(JSON.parse(wordData));
-  } catch (error) {
-    console.error('读取汉字数据失败:', error);
-    res.status(500).json({ error: '读取数据失败' });
-  }
-});
 
 // API路由 - 获取课程索引
 app.get('/api/lessons', (req, res) => {

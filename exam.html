@@ -340,26 +340,48 @@
             try {
               const response = await fetch("data/lesson_index.json");
               const lessons = await response.json();
+
               const map = {};
+              const cDict = {};
+
               lessons.forEach((lesson) => {
                 if (lesson.words) {
                   lesson.words.forEach((w) => {
+                    // 保存原始单词信息
                     map[w.id] = w;
+
+                    // 构建字符字典
+                    if (w.text && w.pron) {
+                      if (w.text.length === 1) {
+                        // 单个字
+                        cDict[w.text] = {
+                          id: w.id,
+                          text: w.text,
+                          pron: w.pron
+                        };
+                      } else {
+                        // 词组：尝试拆分拼音
+                        const chars = w.text.split("");
+                        const prons = w.pron.split(/\s+/); // 按空格拆分拼音
+                        
+                        chars.forEach((char, idx) => {
+                          // 只有在字典里没有该字时才添加，或者优先保留单字记录
+                          if (!cDict[char] || w.text.length === 1) {
+                            cDict[char] = {
+                              id: w.id + "_" + idx, // 临时生成一个 ID
+                              text: char,
+                              pron: prons[idx] || ""
+                            };
+                          }
+                        });
+                      }
+                    }
                   });
                 }
               });
+              
               this.allItemsMap = map;
-
-              const wordResponse = await fetch("data/word.json");
-              const wordData = await wordResponse.json();
-              if (wordData && wordData.word) {
-                const cDict = {};
-                wordData.word.forEach((w) => {
-                  cDict[w.id] = w;
-                  cDict[w.content] = w; 
-                });
-                this.charDictionary = cDict;
-              }
+              this.charDictionary = cDict;
             } catch (error) {
               console.error("数据加载失败:", error);
             }

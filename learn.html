@@ -297,37 +297,20 @@
             audioErrorMessage: "",
             learnedIds: new Set(),
              learnedChars: new Set(), // 已学字符集合
+            learnedChars: new Set(), // 已学字符集合
             learnedItemsMap: {}, // 字符 -> 学习记录
-            wordDictionary: {}, // 汉字字典 (从 word.json 加载)
             learningWord: false,
           };
         },
         async mounted() {
           await initDB(); // 初始化数据库
           await this.loadData();
-          await this.loadWordDictionary(); // 加载汉字字典
           await this.autoSelectLesson(); // 自动选择最近一课+1
           this.checkUrlParams();
           await this.loadLesson();
         },
         methods: {
-          async loadWordDictionary() {
-            try {
-              const response = await fetch("data/word.json");
-              const data = await response.json();
-              // 构建 字符 -> ID/数据的映射
-              const dict = {};
-              if (data && data.word) {
-                data.word.forEach((w) => {
-                  dict[w.content] = w;
-                });
-              }
-              this.wordDictionary = dict;
-              console.log("汉字字典加载完成，共", Object.keys(dict).length, "个字");
-            } catch (error) {
-              console.error("汉字字典加载失败:", error);
-            }
-          },
+
           async loadData() {
             try {
               // 只加载课程索引，不再加载巨大的 word.json
@@ -476,9 +459,6 @@
                   continue;
                 }
 
-                // 查找该字的元数据（主要是为了获取 ID 以关联音频/图片）
-                // 虽然不再使用数字 ID 作为主键，但我们依然可以从字典加载
-                const wordData = this.wordDictionary[char];
 
                 await learningManager.createHanziItem(
                   char,
