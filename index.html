@@ -278,7 +278,7 @@
                 </div>
                 <h6 class="card-title chinese-text">
                   <span v-for="(word, wordIndex) in lesson.words" :key="wordIndex" class="me-2">
-                    {{ word }}
+                    {{ typeof word === 'object' ? word.text : word }}
                   </span>
                 </h6>
               </div>

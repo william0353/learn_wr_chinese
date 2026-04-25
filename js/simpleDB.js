@@ -165,13 +165,25 @@ class HanziLearningManager {
   }
 
   // 创建汉字学习记录
-  async createHanziItem(id, char, lesson) {
+  async createHanziItem(char, lesson) {
+    // 直接使用汉字作为 ID (或者你可以使用 encodeURIComponent(char))
+    // 这样 ID 是唯一的，且与课程无关
+    const id = char;
+
+    // 检查是否已经存在该字符的学习记录
+    const existing = await this.db.get("hanziItems", id);
+    if (existing) {
+      console.log(`[SRS] 字符 "${char}" 已有学习记录，跳过创建`);
+      return existing;
+    }
+
     const now = Date.now();
     const item = {
-      id: `${lesson}_${id}`, // 使用课程和字符ID组合
+      id: id,
       char: char,
       lesson: lesson,
       last_ts: now,
+      created_at: now, // 记录初始学习时间，后续不再修改
       nextReviewAt: now, // 新学的汉字都是今天复习
       level: 0, // 初始等级为0
       mistakeCount: 0, // 初始错误次数为0
@@ -188,6 +200,17 @@ class HanziLearningManager {
   // 获取所有汉字记录
   async getAllHanziItems() {
     return await this.db.getAll("hanziItems");
+  }
+
+  // 获取所有已学习的字符集合
+  async getLearnedChars() {
+    const items = await this.getAllHanziItems();
+    return new Set(items.map((item) => item.char));
+  }
+
+  // 通过字符查找记录
+  async getHanziItemByChar(char) {
+    return await this.db.getByIndex("hanziItems", "char", char);
   }
 
   // 获取指定课程的汉字记录

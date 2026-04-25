@@ -34,11 +34,11 @@
         background-image: url("img/tian_block.svg");
         display: inline-block;
         color: black;
-        width: 55px;
-        height: 55px;
-        font-size: 53px;
+        width: 44px;
+        height: 44px;
+        font-size: 42px;
         text-align: center;
-        line-height: 55px;
+        line-height: 44px;
         margin: 1px 0px 1px 0px;
         font-family: "kai";
         background-size: cover;
@@ -48,12 +48,12 @@
       .write_word {
         background-image: url("img/tian_block.svg");
         display: inline-block;
-        width: 55px;
-        height: 55px;
-        font-size: 53px;
+        width: 44px;
+        height: 44px;
+        font-size: 42px;
         color: lightgray;
         text-align: center;
-        line-height: 55px;
+        line-height: 44px;
         margin: 1px 0px 1px 0px;
         font-family: "kai";
         background-size: cover;
@@ -63,12 +63,12 @@
       .transparent_word {
         background-image: url("img/tian_block.svg");
         display: inline-block;
-        width: 55px;
-        height: 55px;
-        font-size: 53px;
+        width: 44px;
+        height: 44px;
+        font-size: 42px;
         color: rgba(0, 0, 0, 0);
         text-align: center;
-        line-height: 55px;
+        line-height: 44px;
         margin: 1px 0px 1px 0px;
         font-family: "kai";
         background-size: cover;
@@ -241,25 +241,8 @@
             </div>
             <div class="card-body">
               <div class="row mb-3">
-                <div class="col-md-6">
-                  <label class="form-label">选择课程:</label>
-                  <select
-                    v-model="selectedLesson"
-                    @change="loadLessonWords"
-                    class="form-select"
-                  >
-                    <option value="-1">选择课程...</option>
-                    <option
-                      v-for="lesson in lessons"
-                      :key="lesson.id"
-                      :value="lesson.id"
-                    >
-                      第{{ lesson.id + 1 }}课
-                    </option>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">或者自定义输入汉字:</label>
+                <div class="col-md-12">
+                  <label class="form-label">自定义输入汉字:</label>
                   <input
                     v-model="customWords"
                     @input="parseCustomWords"
@@ -287,7 +270,7 @@
                     ></button>
                   </span>
                   <span v-if="selectedWords.length === 0" class="text-muted"
-                    >请选择课程或输入汉字</span
+                    >请通过输入汉字或智能推荐来选择</span
                   >
                 </div>
               </div>
@@ -429,8 +412,11 @@
           loadLessonWords() {
             if (this.selectedLesson >= 0 && this.lessons.length > 0) {
               const lesson = this.lessons[this.selectedLesson];
-              // 现在 words 是对象，提取 text
-              this.selectedWords = lesson.words.map((w) => w.text);
+              // 提取所有汉字并去重
+              const allChars = lesson.words.flatMap((w) =>
+                (w.text || "").split(""),
+              );
+              this.selectedWords = [...new Set(allChars)];
               this.customWords = "";
             }
           },
@@ -535,12 +521,8 @@
               let recentLessonCount = 0;
 
               for (const item of selectedItems.slice(0, 12)) {
-                // item.id 格式为 "lessonID_charID"
-                const parts = item.id.split("_");
-                const originalCharId = parts.slice(1).join("_");
-                const wordInfo = this.allItemsMap[originalCharId];
-                if (wordInfo) {
-                  recommendedWords.push(wordInfo.text);
+                if (item.char) {
+                  recommendedWords.push(item.char);
                   // 统计最近一课的汉字数量
                   if (item.lesson === currentMaxLesson) {
                     recentLessonCount++;

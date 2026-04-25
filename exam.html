@@ -101,17 +101,10 @@
               <h2 class="chinese-text">智能汉字听写测试</h2>
               <p class="text-muted">
                 <i class="bi bi-lightbulb"></i>
-                系统根据记忆曲线智能选择需要复习的汉字，优先测试容易遗忘的内容。
+                系统将测试分为“最近学习”和“温故知新(SRS)”两个阶段。
               </p>
               <p class="text-muted">
-                使用方法：不要让孩子看到屏幕，听写本页汉字。家长可以解释。
-              </p>
-              <p class="text-muted">
-                听写结束后，在结果列标注出回答错误的题目，然后点击提交保存结果
-              </p>
-              <p class="text-warning">
-                <i class="bi bi-exclamation-triangle"></i>
-                请务必如实标记错误，系统将据此调整每个汉字的记忆参数和复习频率
+                听写结束后，在结果列标注出回答错误的题目，然后分别点击对应的提交按钮。
               </p>
 
               <button
@@ -121,43 +114,40 @@
               >
                 <i class="bi bi-hourglass-split spin" v-if="isGenerating"></i>
                 <i class="bi bi-arrow-clockwise" v-else></i>
-                {{ isGenerating ? '生成中...' : '重新生成测试' }}
+                {{ isGenerating ? '生成中...' : '重新生成所有测试' }}
               </button>
-
-              <div
-                class="alert alert-info"
-                v-if="examWords.length > 0 && !examWords[0].isRandom"
-              >
-                <i class="bi bi-info-circle"></i>
-                根据记忆曲线智能选择了 {{ examWords.length }} 个汉字进行测试
-              </div>
-              <div
-                class="alert alert-warning"
-                v-else-if="examWords.length > 0 && examWords[0].isRandom"
-              >
-                <i class="bi bi-exclamation-triangle"></i>
-                暂无学习记录，使用随机模式。请先在学习页面完成课程。
-              </div>
             </div>
 
-            <div class="col-md-12">
-              <table class="table table-striped">
-                <thead class="table-dark">
+            <!-- 最近学习测试 (最近 5 个) -->
+            <div class="col-md-12 mb-5" v-if="recentWords.length > 0">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="chinese-text text-primary">
+                  <i class="bi bi-star-fill"></i> 最近学习 ({{ recentWords.length }}字)
+                </h4>
+                <button 
+                  class="btn btn-outline-success" 
+                  @click="openConfirmModal('recent')"
+                  :disabled="recentWords.length === 0 || isRecentSubmitted"
+                >
+                  {{ isRecentSubmitted ? '最近学习结果已提交' : '提交最近学习结果' }}
+                </button>
+              </div>
+              <table class="table table-bordered table-hover">
+                <thead class="table-primary text-center">
                   <tr>
-                    <th>序号</th>
+                    <th style="width: 60px">序号</th>
                     <th>汉字</th>
-                    <th>发音</th>
-                    <th>遗忘概率</th>
-                    <th>结果（标注错误）</th>
+                    <th>音频</th>
+                    <th style="width: 150px">结果（标注错误）</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(word, index) in examWords" :key="word.id">
-                    <td class="align-middle">{{ index + 1 }}</td>
-                    <td class="align-middle chinese-text exam-word">
+                  <tr v-for="(word, index) in recentWords" :key="word.id">
+                    <td class="align-middle text-center">{{ index + 1 }}</td>
+                    <td class="align-middle chinese-text exam-word text-center">
                       {{ word.text }}
                     </td>
-                    <td class="align-middle">
+                    <td class="align-middle text-center">
                       <audio
                         :key="word.id"
                         controls
@@ -168,74 +158,97 @@
                           :src="'sound/' + word.id + '.mp3'"
                           type="audio/mpeg"
                         />
-                        您的浏览器不支持音频播放。
                       </audio>
-                      <br />
-                      <small class="text-muted">{{ word.pron }}</small>
                     </td>
                     <td class="align-middle">
-                      <span
-                        v-if="word.forgettingProb !== undefined"
-                        :class="getProbabilityClass(word.forgettingProb)"
-                        class="badge"
-                      >
-                        {{ (word.forgettingProb * 100).toFixed(0) }}%
-                      </span>
-                      <span v-else class="text-muted">-</span>
-                    </td>
-                    <td class="align-middle">
-                      <div class="form-check">
+                      <div class="form-check d-flex justify-content-center">
                         <input
-                          class="form-check-input"
+                          class="form-check-input me-2"
                           type="checkbox"
                           v-model="word.isWrong"
-                          :id="'wrong_' + index"
+                          :id="'recent_wrong_' + index"
+                          :disabled="isRecentSubmitted"
                         />
-                        <label class="form-check-label" :for="'wrong_' + index">
+                        <label class="form-check-label text-danger fw-bold" :for="'recent_wrong_' + index" v-if="word.isWrong">
                           错误
                         </label>
-                        <i
-                          v-if="word.isWrong"
-                          class="bi bi-exclamation-triangle warning-icon ms-2"
-                        ></i>
+                        <label class="form-check-label text-muted" :for="'recent_wrong_' + index" v-else>
+                          正确
+                        </label>
                       </div>
                     </td>
                   </tr>
                 </tbody>
               </table>
+            </div>
 
-              <!-- 统计信息 -->
-              <div class="text-center mt-4">
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="card">
-                      <div class="card-body">
-                        <h5 class="card-title text-success">正确</h5>
-                        <p class="card-text h3">{{ correctCount }}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="card">
-                      <div class="card-body">
-                        <h5 class="card-title text-danger">错误</h5>
-                        <p class="card-text h3">{{ wrongCount }}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- 提交按钮 -->
-              <div class="text-center mt-4">
-                <button
-                  type="button"
-                  class="btn btn-success btn-lg"
-                  data-bs-toggle="modal"
-                  data-bs-target="#confirmModal"
+            <!-- SRS 复习测试 (最多 20 个) -->
+            <div class="col-md-12" v-if="srsWords.length > 0">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="chinese-text text-success">
+                  <i class="bi bi-graph-up-arrow"></i> 温故知新 ({{ srsWords.length }}字)
+                </h4>
+                <button 
+                  class="btn btn-outline-success" 
+                  @click="openConfirmModal('srs')"
+                  :disabled="srsWords.length === 0 || isSrsSubmitted"
                 >
-                  提交测试结果
+                  {{ isSrsSubmitted ? '复习阶段结果已提交' : '提交复习结果' }}
                 </button>
+              </div>
+              <table class="table table-bordered table-hover">
+                <thead class="table-success text-center">
+                  <tr>
+                    <th style="width: 60px">序号</th>
+                    <th>汉字</th>
+                    <th>音频</th>
+                    <th style="width: 150px">结果（标注错误）</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(word, index) in srsWords" :key="word.id">
+                    <td class="align-middle text-center">{{ index + 1 }}</td>
+                    <td class="align-middle chinese-text exam-word text-center">
+                      {{ word.text }}
+                    </td>
+                    <td class="align-middle text-center">
+                      <audio
+                        :key="word.id"
+                        controls
+                        style="max-width: 12rem"
+                        @error="audioError"
+                      >
+                        <source
+                          :src="'sound/' + word.id + '.mp3'"
+                          type="audio/mpeg"
+                        />
+                      </audio>
+                    </td>
+                    <td class="align-middle">
+                      <div class="form-check d-flex justify-content-center">
+                        <input
+                          class="form-check-input me-2"
+                          type="checkbox"
+                          v-model="word.isWrong"
+                          :id="'srs_wrong_' + index"
+                          :disabled="isSrsSubmitted"
+                        />
+                        <label class="form-check-label text-danger fw-bold" :for="'srs_wrong_' + index" v-if="word.isWrong">
+                          错误
+                        </label>
+                        <label class="form-check-label text-muted" :for="'srs_wrong_' + index" v-else>
+                          正确
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="col-md-12 text-center py-5" v-if="recentWords.length === 0 && srsWords.length === 0 && !isGenerating">
+              <div class="alert alert-warning">
+                暂无需要测试的内容。请先在学习页面添加汉字。
               </div>
             </div>
           </div>
@@ -246,24 +259,23 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title">确认提交</h5>
+                <h5 class="modal-title">确认提交 ({{ currentSubmitType === 'recent' ? '最近学习' : '复习阶段' }})</h5>
                 <button
                   type="button"
                   class="btn-close"
                   data-bs-dismiss="modal"
                 ></button>
               </div>
-              <div class="modal-body">
-                <h4>本次测试结果：</h4>
-                <div class="row text-center">
+              <div class="modal-body text-center">
+                <div class="row">
                   <div class="col-6">
                     <div class="badge bg-success fs-6 p-3">
-                      正确：{{ correctCount }}
+                      正确：{{ currentSubmitWords.filter(w => !w.isWrong).length }}
                     </div>
                   </div>
                   <div class="col-6">
                     <div class="badge bg-danger fs-6 p-3">
-                      错误：{{ wrongCount }}
+                      错误：{{ currentSubmitWords.filter(w => w.isWrong).length }}
                     </div>
                   </div>
                 </div>
@@ -300,21 +312,25 @@
         data() {
           return {
             allItemsMap: {},
-            examWords: [],
+            recentWords: [], // 最近 5 个汉字
+            srsWords: [], // SRS 筛选出的 20 个汉字 (不包含 recentWords)
             hanziItems: [],
             currentMaxLesson: 0,
             isGenerating: false,
+            charDictionary: {}, 
+            currentSubmitType: 'recent', // 'recent' 或 'srs'
+            isRecentSubmitted: false,
+            isSrsSubmitted: false,
+            confirmModal: null
           };
         },
         computed: {
-          correctCount() {
-            return this.examWords.filter((word) => !word.isWrong).length;
-          },
-          wrongCount() {
-            return this.examWords.filter((word) => word.isWrong).length;
-          },
+          currentSubmitWords() {
+            return this.currentSubmitType === 'recent' ? this.recentWords : this.srsWords;
+          }
         },
         async mounted() {
+          this.confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
           await initDB();
           await this.loadData();
           await this.generateExam();
@@ -322,10 +338,8 @@
         methods: {
           async loadData() {
             try {
-              // 弃用 word.json，改为从 lesson_index.json 构建全局查表
               const response = await fetch("data/lesson_index.json");
               const lessons = await response.json();
-
               const map = {};
               lessons.forEach((lesson) => {
                 if (lesson.words) {
@@ -335,14 +349,23 @@
                 }
               });
               this.allItemsMap = map;
+
+              const wordResponse = await fetch("data/word.json");
+              const wordData = await wordResponse.json();
+              if (wordData && wordData.word) {
+                const cDict = {};
+                wordData.word.forEach((w) => {
+                  cDict[w.id] = w;
+                  cDict[w.content] = w; 
+                });
+                this.charDictionary = cDict;
+              }
             } catch (error) {
               console.error("数据加载失败:", error);
             }
 
-            // 加载汉字学习记录
             try {
               this.hanziItems = await learningManager.getAllHanziItems();
-              // 获取当前学习到的最高课程
               this.currentMaxLesson =
                 this.hanziItems.length > 0
                   ? Math.max(...this.hanziItems.map((item) => item.lesson))
@@ -353,89 +376,85 @@
           },
           async generateExam() {
             this.isGenerating = true;
-
+            this.isRecentSubmitted = false;
+            this.isSrsSubmitted = false;
             try {
-              // 如果没有学习记录，使用随机模式
               if (this.hanziItems.length === 0) {
-                this.generateRandomExam();
+                this.recentWords = [];
+                this.srsWords = [];
                 return;
               }
 
-              // 确保最近一课的汉字被选中
-              // 使用当前最高完成课程作为"最近一课"
+              // 1. 筛选最近学习的 (按 created_at 排序)
+              const sortedByCreated = [...this.hanziItems]
+                .filter(item => item.created_at)
+                .sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+              
+              const top5Items = sortedByCreated.slice(0, 5);
+              const top5Ids = new Set(top5Items.map(i => i.id));
+
+              // 2. 筛选 SRS 需要复习的 (排除掉最近的这 5 个)
+              const remainingItems = this.hanziItems.filter(item => !top5Ids.has(item.id));
+              
               const latestLesson = this.currentMaxLesson;
+              let srsItems = selectForSession(remainingItems, latestLesson);
+              
+              // 去重并限制 20 个
+              const seenChars = new Set();
+              srsItems = srsItems.filter((item) => {
+                if (seenChars.has(item.char)) return false;
+                seenChars.add(item.char);
+                return true;
+              }).slice(0, 20);
 
-              console.log("当前最高完成课程:", latestLesson);
-              console.log("总汉字记录数:", this.hanziItems.length);
+              // 映射数据
+              this.recentWords = this.mapItemsToWords(top5Items);
+              this.srsWords = this.mapItemsToWords(srsItems);
 
-              // 使用记忆曲线算法选择测试内容，传入最近课程编号
-              const selectedItems = selectForSession(
-                this.hanziItems,
-                latestLesson,
-              );
-
-              console.log("算法选中的汉字数:", selectedItems.length);
-
-              if (selectedItems.length === 0) {
-                this.generateRandomExam();
-                return;
-              }
-
-              // 根据选中的项目找到对应的单词数据
-              this.examWords = selectedItems
-                .map((item) => {
-                  const parts = item.id.split("_");
-                  const originalId = parts.slice(1).join("_");
-                  const wordInfo = this.allItemsMap[originalId];
-
-                  return {
-                    ...wordInfo,
-                    hanziItem: item, // 保存对应的学习记录
-                    isWrong: false,
-                    forgettingProb: forgettingProb(item, Date.now()), // 显示遗忘概率
-                  };
-                })
-                .filter((w) => w && w.text); // 过滤掉找不到的数据
-
-              console.log("最终测试题数:", this.examWords.length);
             } catch (error) {
               console.error("生成测试失败:", error);
-              this.generateRandomExam();
             } finally {
               this.isGenerating = false;
             }
           },
-          generateRandomExam() {
-            // 随机选择模式（备用）
-            const allItems = Object.values(this.allItemsMap);
-            const validWords = allItems.filter(
-              (word) => word.text && word.text.trim() !== "",
-            );
+          mapItemsToWords(items) {
+            return items.map((item) => {
+              const originalId = item.id;
+              let wordInfo = this.allItemsMap[originalId];
+              
+              if (!wordInfo) {
+                const dictEntry = this.charDictionary[originalId] || this.charDictionary[item.char];
+                if (dictEntry) {
+                  wordInfo = {
+                    id: dictEntry.id,
+                    text: dictEntry.content,
+                    pron: dictEntry.rsrv_txt_1,
+                    type: "word"
+                  };
+                }
+              }
 
-            const shuffled = [...validWords].sort(() => 0.5 - Math.random());
-            this.examWords = shuffled.slice(0, 10).map((word) => ({
-              ...word,
-              isWrong: false,
-              isRandom: true,
-            }));
+              if (!wordInfo) return null;
+
+              return {
+                ...wordInfo,
+                text: item.char || wordInfo.text,
+                hanziItem: item,
+                isWrong: false
+              };
+            }).filter(w => w && w.text);
+          },
+          openConfirmModal(type) {
+            this.currentSubmitType = type;
+            this.confirmModal.show();
           },
           async submitExam() {
             try {
-              const results = [];
+              const wordsToSubmit = this.currentSubmitWords;
               const nowMs = Date.now();
 
-              // 更新每个汉字的学习记录
-              for (const word of this.examWords) {
-                const result = {
-                  word_id: word.id,
-                  content: word.content,
-                  result: !word.isWrong,
-                };
-                results.push(result);
-
-                // 如果有学习记录，更新记忆参数
+              for (const word of wordsToSubmit) {
                 if (word.hanziItem) {
-                  // 使用 word.text 而不是 word.content
                   const cleanHistory = (word.hanziItem.history || []).map(
                     (h) => ({
                       ts: Number(h.ts),
@@ -448,6 +467,7 @@
                     char: String(word.text),
                     lesson: Number(word.hanziItem.lesson),
                     last_ts: Number(word.hanziItem.last_ts) || Date.now(),
+                    created_at: word.hanziItem.created_at ? Number(word.hanziItem.created_at) : undefined,
                     nextReviewAt:
                       Number(word.hanziItem.nextReviewAt) || Date.now(),
                     level: Number(word.hanziItem.level) || 0,
@@ -469,51 +489,28 @@
                 }
               }
 
-              console.log("测试结果:", results);
+              // 标记已提交
+              if (this.currentSubmitType === 'recent') {
+                this.isRecentSubmitted = true;
+              } else {
+                this.isSrsSubmitted = true;
+              }
 
-              // 保存到本地存储用于统计
-              const examHistory = JSON.parse(
-                localStorage.getItem("examHistory") || "[]",
-              );
-              examHistory.push({
-                date: new Date().toISOString(),
-                results: results,
-                correct: this.correctCount,
-                wrong: this.wrongCount,
-                usedMemoryCurve: !this.examWords[0]?.isRandom,
-              });
-              localStorage.setItem("examHistory", JSON.stringify(examHistory));
-
-              // 关闭模态框
-              const modal = bootstrap.Modal.getInstance(
-                document.getElementById("confirmModal"),
-              );
-              modal.hide();
-
-              // 显示成功消息
-              const message =
-                `测试结果已保存！\n正确：${this.correctCount}，错误：${this.wrongCount}\n\n` +
-                `系统已根据答题情况调整每个汉字的记忆参数，下次测试将更加精准。`;
-              alert(message);
-
-              // 重新生成测试
-              await this.generateExam();
+              this.confirmModal.hide();
+              
+              // 重新加载数据以同步状态
+              await this.loadData();
+              
+              alert("提交成功！记录已更新，您可以继续回顾结果。");
             } catch (error) {
-              console.error("提交测试失败:", error);
+              console.error("提交失败:", error);
               alert("提交失败，请重试。");
             }
           },
-          getProbabilityClass(prob) {
-            if (prob >= 0.7) return "bg-danger";
-            if (prob >= 0.5) return "bg-warning";
-            if (prob >= 0.3) return "bg-success";
-            return "bg-secondary";
-          },
-          audioError(event) {
-            console.log("音频加载失败:", event.target.src);
-            // 可以在这里添加更多的错误处理逻辑
-          },
-        },
+          audioError(e) {
+            console.error("音频加载失败");
+          }
+        }
       }).mount("#app");
     </script>
   </body>

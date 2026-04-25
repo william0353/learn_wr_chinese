@@ -166,10 +166,18 @@
                     </td>
                     <td><small>{{ word.pron }}</small></td>
                     <td class="text-center">
-                      <i
-                        v-if="isWordLearned(word.id)"
-                        class="bi bi-check-circle-fill text-success"
-                      ></i>
+                      <div v-if="isWordLearned(word)">
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <div style="font-size: 0.7em" class="text-muted">
+                          {{ getLearningDate(word) }}
+                        </div>
+                        <span
+                          v-if="isLearnedThisWeek(word)"
+                          class="badge bg-warning text-dark"
+                          style="font-size: 0.6em"
+                          >本周</span
+                        >
+                      </div>
                       <i v-else class="bi bi-circle text-muted"></i>
                     </td>
                   </tr>
@@ -207,7 +215,7 @@
                     </p>
                     <div class="mb-3">
                       <button
-                        v-if="!isWordLearned(selectedWord.id)"
+                        v-if="!isWordLearned(selectedWord)"
                         @click="learnWord(selectedWord)"
                         :disabled="learningWord"
                         class="btn btn-primary btn-lg"
@@ -216,13 +224,19 @@
                         <i class="bi bi-hourglass-split spin" v-else></i>
                         {{ learningWord ? '处理中...' : '学习此内容' }}
                       </button>
-                      <button
-                        v-else
-                        class="btn btn-outline-success btn-lg"
-                        disabled
-                      >
-                        <i class="bi bi-check-circle"></i> 已加入复习
-                      </button>
+                      <div v-else>
+                        <button class="btn btn-outline-success btn-lg" disabled>
+                          <i class="bi bi-check-circle"></i> 已加入复习
+                        </button>
+                        <div class="mt-2 text-muted">
+                          学习日期: {{ getLearningDate(selectedWord) }}
+                          <span
+                            v-if="isLearnedThisWeek(selectedWord)"
+                            class="badge bg-warning text-dark ms-1"
+                            >本周学习</span
+                          >
+                        </div>
+                      </div>
                     </div>
                     <small class="text-muted"
                       >Type: {{ selectedWord.type }} | ID: {{ selectedWord.id
@@ -282,17 +296,38 @@
             selectedIndex: 0,
             audioErrorMessage: "",
             learnedIds: new Set(),
+             learnedChars: new Set(), // 已学字符集合
+            learnedItemsMap: {}, // 字符 -> 学习记录
+            wordDictionary: {}, // 汉字字典 (从 word.json 加载)
             learningWord: false,
           };
         },
         async mounted() {
           await initDB(); // 初始化数据库
           await this.loadData();
+          await this.loadWordDictionary(); // 加载汉字字典
           await this.autoSelectLesson(); // 自动选择最近一课+1
           this.checkUrlParams();
           await this.loadLesson();
         },
         methods: {
+          async loadWordDictionary() {
+            try {
+              const response = await fetch("data/word.json");
+              const data = await response.json();
+              // 构建 字符 -> ID/数据的映射
+              const dict = {};
+              if (data && data.word) {
+                data.word.forEach((w) => {
+                  dict[w.content] = w;
+                });
+              }
+              this.wordDictionary = dict;
+              console.log("汉字字典加载完成，共", Object.keys(dict).length, "个字");
+            } catch (error) {
+              console.error("汉字字典加载失败:", error);
+            }
+          },
           async loadData() {
             try {
               // 只加载课程索引，不再加载巨大的 word.json
@@ -359,63 +394,119 @@
               await this.refreshLearnedStatus();
             }
           },
-          async refreshLearnedStatus() {
+           async refreshLearnedStatus() {
             try {
-              const learnedItems = await learningManager.getHanziItemsByLesson(
-                this.currentLesson,
-              );
-              this.learnedIds = new Set(
-                learnedItems
-                  .map((item) => {
-                    // 处理 ID 格式 ${lesson}_${id}
-                    const parts = item.id.split("_");
-                    // 不再使用 parseInt，因为 ID 可能是字符串 (如 'ext_0_0')
-                    // 我们需要确保这里的格式与 word.id 完全一致
-                    return parts.length > 1
-                      ? parts.slice(1).join("_")
-                      : parts[0];
-                  })
-                  .map((id) => (isNaN(id) ? id : parseInt(id))), // 如果是数字字符串转为数字，以匹配 JSON 中的数字 ID
-              );
+              const items = await learningManager.getAllHanziItems();
+              const map = {};
+              const chars = new Set();
+              items.forEach((item) => {
+                map[item.char] = item;
+                chars.add(item.char);
+              });
+              this.learnedItemsMap = map;
+              this.learnedChars = chars;
             } catch (error) {
               console.error("刷新学习状态失败:", error);
             }
           },
-          isWordLearned(wordId) {
-            return this.learnedIds.has(wordId);
+          getLearningDate(word) {
+            if (!word || !word.text) return "";
+            const chars = word.text.split("");
+            let latestCreatedAt = 0;
+            for (const char of chars) {
+              const item = this.learnedItemsMap[char];
+              // 只有存在 created_at 字段时才显示
+              if (item && item.created_at) {
+                if (item.created_at > latestCreatedAt) {
+                  latestCreatedAt = item.created_at;
+                }
+              } else {
+                // 如果词组中有一个字没有 created_at，或者该词组还没学完
+                // 为了严格遵守“没这个字段就不显示”，这里可以根据需要调整逻辑
+                // 这里我们要求所有字都必须有 created_at 才会显示日期
+                return "";
+              }
+            }
+            if (latestCreatedAt === 0) return "";
+            return new Date(latestCreatedAt).toLocaleDateString();
+          },
+          isLearnedThisWeek(word) {
+            if (!word || !word.text) return false;
+            const chars = word.text.split("");
+            let latestCreatedAt = 0;
+            for (const char of chars) {
+              const item = this.learnedItemsMap[char];
+              if (item && item.created_at) {
+                if (item.created_at > latestCreatedAt) {
+                  latestCreatedAt = item.created_at;
+                }
+              } else {
+                return false;
+              }
+            }
+            if (latestCreatedAt === 0) return false;
+
+            const now = new Date();
+            const lastWeek = new Date();
+            lastWeek.setDate(now.getDate() - 7);
+            return latestCreatedAt > lastWeek.getTime();
+          },
+          isWordLearned(word) {
+            if (!word || !word.text) return false;
+
+            // 如果词组中的所有汉字都学过了，则认为该词组已学
+            const chars = word.text.split("");
+            return chars.every((char) => this.learnedChars.has(char));
           },
           async learnWord(word) {
-            if (!word || word.id === undefined || word.id === null) {
-              console.error("无法学习 ID 为空的汉字", word);
+            if (!word || !word.text) {
+              console.error("无法学习内容为空的项目", word);
               return;
             }
-            if (this.isWordLearned(word.id)) return;
 
             this.learningWord = true;
             try {
-              await learningManager.createHanziItem(
-                word.id,
-                word.text,
-                this.currentLesson,
-              );
-              this.learnedIds.add(word.id);
+              const chars = word.text.split("");
+              let newLearnedCount = 0;
 
-              // 检查该页面所有汉字是否都学完了
+              for (const char of chars) {
+                // 检查是否已经学过
+                if (this.learnedChars.has(char)) {
+                  console.log(`[SRS] "${char}" 已学过，跳过`);
+                  continue;
+                }
+
+                // 查找该字的元数据（主要是为了获取 ID 以关联音频/图片）
+                // 虽然不再使用数字 ID 作为主键，但我们依然可以从字典加载
+                const wordData = this.wordDictionary[char];
+
+                await learningManager.createHanziItem(
+                  char,
+                  this.currentLesson,
+                );
+                this.learnedChars.add(char);
+                newLearnedCount++;
+              }
+
+              if (newLearnedCount > 0) {
+                console.log(`[SRS] 成功学习了 ${newLearnedCount} 个新汉字`);
+              }
+
+              // 检查该页面所有词组是否都学完了 (所有字符都学完了)
               const allLearned = this.currentWords.every((w) =>
-                this.isWordLearned(w.id),
+                this.isWordLearned(w),
               );
               if (allLearned) {
                 await learningManager.markLessonCompleted(this.currentLesson);
                 console.log(
                   `[SRS] 第${this.currentLesson + 1}课已全部学完，已更新课程状态`,
                 );
-                // 可选：添加一个小反馈
                 alert(
-                  `太棒了！第${this.currentLesson + 1}课的所有汉字都已学完！\n该课已标记为完成。`,
+                  `太棒了！第${this.currentLesson + 1}课的所有内容都已学完！\n该课已标记为完成。`,
                 );
               }
             } catch (error) {
-              console.error("学习汉字失败:", error);
+              console.error("学习内容失败:", error);
               alert("操作失败，请重试");
             } finally {
               this.learningWord = false;

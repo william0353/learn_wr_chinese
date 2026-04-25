@@ -3,36 +3,22 @@
     "id": 0,
     "words": [
       {
-        "id": 6,
-        "text": "人",
-        "type": "word",
-        "pron": "rén",
-        "imageUrl": "",
-        "audioUrl": ""
+        "id": "p0_1",
+        "text": "人们",
+        "type": "phrase",
+        "pron": "rén men"
       },
       {
-        "id": 162,
-        "text": "十",
-        "type": "word",
-        "pron": "shí",
-        "imageUrl": "",
-        "audioUrl": ""
+        "id": "p0_2",
+        "text": "大米",
+        "type": "phrase",
+        "pron": "dà mǐ"
       },
       {
-        "id": 366,
-        "text": "火",
-        "type": "word",
-        "pron": "huǒ",
-        "imageUrl": "",
-        "audioUrl": ""
-      },
-      {
-        "id": 448,
-        "text": "米",
-        "type": "word",
-        "pron": "mǐ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "id": "p0_3",
+        "text": "火山",
+        "type": "phrase",
+        "pron": "huǒ shān"
       }
     ]
   },
@@ -40,36 +26,22 @@
     "id": 1,
     "words": [
       {
-        "id": 94,
-        "text": "日",
-        "type": "word",
-        "pron": "rì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "id": "p1_1",
+        "text": "日本",
+        "type": "phrase",
+        "pron": "rì běn"
       },
       {
-        "id": 189,
-        "text": "水",
-        "type": "word",
-        "pron": "shuǐ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "id": "p1_2",
+        "text": "大山",
+        "type": "phrase",
+        "pron": "dà shān"
       },
       {
-        "id": 266,
-        "text": "山",
-        "type": "word",
-        "pron": "shān",
-        "imageUrl": "",
-        "audioUrl": ""
-      },
-      {
-        "id": 823,
-        "text": "云",
-        "type": "word",
-        "pron": "yún",
-        "imageUrl": "",
-        "audioUrl": ""
+        "id": "p1_3",
+        "text": "白云",
+        "type": "phrase",
+        "pron": "bái yún"
       }
     ]
   },
@@ -77,36 +49,16 @@
     "id": 2,
     "words": [
       {
-        "id": 1,
-        "text": "一",
-        "type": "word",
-        "pron": "yī",
-        "imageUrl": "",
-        "audioUrl": ""
+        "id": "p2_1",
+        "text": "一个",
+        "type": "phrase",
+        "pron": "yī gè"
       },
       {
-        "id": 11,
-        "text": "个",
-        "type": "word",
-        "pron": "gè",
-        "imageUrl": "",
-        "audioUrl": ""
-      },
-      {
-        "id": 170,
-        "text": "二",
-        "type": "word",
-        "pron": "èr",
-        "imageUrl": "",
-        "audioUrl": ""
-      },
-      {
-        "id": 1000,
-        "text": "三",
-        "type": "word",
-        "pron": "sān",
-        "imageUrl": "",
-        "audioUrl": ""
+        "id": "p2_2",
+        "text": "三个",
+        "type": "phrase",
+        "pron": "sān gè"
       }
     ]
   },
@@ -117,33 +69,25 @@
         "id": 575,
         "text": "土",
         "type": "word",
-        "pron": "tǔ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tǔ"
       },
       {
         "id": 1001,
         "text": "田",
         "type": "word",
-        "pron": "tián",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tián"
       },
       {
         "id": 1002,
         "text": "苗",
         "type": "word",
-        "pron": "miáo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "miáo"
       },
       {
         "id": 1007,
         "text": "瓜",
         "type": "word",
-        "pron": "guā",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "guā"
       }
     ]
   },
@@ -154,33 +98,25 @@
         "id": 17,
         "text": "大",
         "type": "word",
-        "pron": "dà",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "dà"
       },
       {
         "id": 50,
         "text": "小",
         "type": "word",
-        "pron": "xiǎo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "xiǎo"
       },
       {
         "id": 166,
         "text": "车",
         "type": "word",
-        "pron": "chē",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "chē"
       },
       {
         "id": 199,
         "text": "门",
         "type": "word",
-        "pron": "mén",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "mén"
       }
     ]
   },
@@ -191,33 +127,25 @@
         "id": 346,
         "text": "木",
         "type": "word",
-        "pron": "mù",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "mù"
       },
       {
         "id": 634,
         "text": "林",
         "type": "word",
-        "pron": "lín",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "lín"
       },
       {
         "id": 687,
         "text": "雨",
         "type": "word",
-        "pron": "yǔ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yǔ"
       },
       {
         "id": 818,
         "text": "森",
         "type": "word",
-        "pron": "sēn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "sēn"
       }
     ]
   },
@@ -228,33 +156,25 @@
         "id": 67,
         "text": "如",
         "type": "word",
-        "pron": "rú",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "rú"
       },
       {
         "id": 95,
         "text": "手",
         "type": "word",
-        "pron": "shǒu",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shǒu"
       },
       {
         "id": 221,
         "text": "白",
         "type": "word",
-        "pron": "bái",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "bái"
       },
       {
         "id": 288,
         "text": "四",
         "type": "word",
-        "pron": "sì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "sì"
       }
     ]
   },
@@ -265,33 +185,25 @@
         "id": 46,
         "text": "天",
         "type": "word",
-        "pron": "tiān",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tiān"
       },
       {
         "id": 87,
         "text": "女",
         "type": "word",
-        "pron": "nǚ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "nǚ"
       },
       {
         "id": 1004,
         "text": "刀",
         "type": "word",
-        "pron": "dāo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "dāo"
       },
       {
         "id": 1005,
         "text": "网",
         "type": "word",
-        "pron": "wǎng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "wǎng"
       }
     ]
   },
@@ -302,33 +214,25 @@
         "id": 12,
         "text": "上",
         "type": "word",
-        "pron": "shàng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shàng"
       },
       {
         "id": 43,
         "text": "下",
         "type": "word",
-        "pron": "xià",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "xià"
       },
       {
         "id": 54,
         "text": "心",
         "type": "word",
-        "pron": "xīn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "xīn"
       },
       {
         "id": 481,
         "text": "千",
         "type": "word",
-        "pron": "qiān",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "qiān"
       }
     ]
   },
@@ -339,33 +243,25 @@
         "id": 219,
         "text": "马",
         "type": "word",
-        "pron": "mǎ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "mǎ"
       },
       {
         "id": 228,
         "text": "花",
         "type": "word",
-        "pron": "huā",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "huā"
       },
       {
         "id": 793,
         "text": "叶",
         "type": "word",
-        "pron": "yè",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yè"
       },
       {
         "id": 879,
         "text": "灯",
         "type": "word",
-        "pron": "dēng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "dēng"
       }
     ]
   },
@@ -376,33 +272,25 @@
         "id": 143,
         "text": "力",
         "type": "word",
-        "pron": "lì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "lì"
       },
       {
         "id": 271,
         "text": "男",
         "type": "word",
-        "pron": "nán",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "nán"
       },
       {
         "id": 281,
         "text": "妈",
         "type": "word",
-        "pron": "mā",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "mā"
       },
       {
         "id": 442,
         "text": "足",
         "type": "word",
-        "pron": "zú",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zú"
       }
     ]
   },
@@ -413,33 +301,25 @@
         "id": 297,
         "text": "目",
         "type": "word",
-        "pron": "mù",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "mù"
       },
       {
         "id": 699,
         "text": "雪",
         "type": "word",
-        "pron": "xuě",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "xuě"
       },
       {
         "id": 727,
         "text": "泪",
         "type": "word",
-        "pron": "lèi",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "lèi"
       },
       {
         "id": 1008,
         "text": "羊",
         "type": "word",
-        "pron": "yáng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yáng"
       }
     ]
   },
@@ -450,41 +330,31 @@
         "id": 158,
         "text": "果",
         "type": "word",
-        "pron": "guǒ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "guǒ"
       },
       {
         "id": 376,
         "text": "五",
         "type": "word",
-        "pron": "wǔ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "wǔ"
       },
       {
         "id": 747,
         "text": "鱼",
         "type": "word",
-        "pron": "yú",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yú"
       },
       {
         "id": 852,
         "text": "冰",
         "type": "word",
-        "pron": "bīng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "bīng"
       },
       {
         "id": 971,
         "text": "秋",
         "type": "word",
-        "pron": "qiū",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "qiū"
       }
     ]
   },
@@ -495,41 +365,31 @@
         "id": 3,
         "text": "了",
         "type": "word",
-        "pron": "le",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "le"
       },
       {
         "id": 103,
         "text": "头",
         "type": "word",
-        "pron": "tóu",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tóu"
       },
       {
         "id": 196,
         "text": "电",
         "type": "word",
-        "pron": "diàn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "diàn"
       },
       {
         "id": 645,
         "text": "六",
         "type": "word",
-        "pron": "liù",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "liù"
       },
       {
         "id": 734,
         "text": "七",
         "type": "word",
-        "pron": "qī",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "qī"
       }
     ]
   },
@@ -540,41 +400,31 @@
         "id": 5,
         "text": "不",
         "type": "word",
-        "pron": "bù",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "bù"
       },
       {
         "id": 106,
         "text": "儿",
         "type": "word",
-        "pron": "ér",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "ér"
       },
       {
         "id": 598,
         "text": "八",
         "type": "word",
-        "pron": "bā",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "bā"
       },
       {
         "id": 819,
         "text": "耳",
         "type": "word",
-        "pron": "ěr",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "ěr"
       },
       {
         "id": 851,
         "text": "九",
         "type": "word",
-        "pron": "jiǔ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "jiǔ"
       }
     ]
   },
@@ -585,41 +435,31 @@
         "id": 20,
         "text": "子",
         "type": "word",
-        "pron": "zǐ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zǐ"
       },
       {
         "id": 78,
         "text": "开",
         "type": "word",
-        "pron": "kāi",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "kāi"
       },
       {
         "id": 213,
         "text": "口",
         "type": "word",
-        "pron": "kǒu",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "kǒu"
       },
       {
         "id": 938,
         "text": "鸟",
         "type": "word",
-        "pron": "niǎo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "niǎo"
       },
       {
         "id": 1009,
         "text": "虫",
         "type": "word",
-        "pron": "",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": ""
       }
     ]
   },
@@ -630,33 +470,25 @@
         "id": 33,
         "text": "出",
         "type": "word",
-        "pron": "chū",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "chū"
       },
       {
         "id": 206,
         "text": "少",
         "type": "word",
-        "pron": "shǎo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shǎo"
       },
       {
         "id": 737,
         "text": "牛",
         "type": "word",
-        "pron": "niú",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "niú"
       },
       {
         "id": 785,
         "text": "牙",
         "type": "word",
-        "pron": "yá",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yá"
       }
     ]
   },
@@ -667,33 +499,25 @@
         "id": 0,
         "text": "的",
         "type": "word",
-        "pron": "de",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "de"
       },
       {
         "id": 34,
         "text": "也",
         "type": "word",
-        "pron": "yě",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yě"
       },
       {
         "id": 96,
         "text": "又",
         "type": "word",
-        "pron": "yòu",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yòu"
       },
       {
         "id": 328,
         "text": "飞",
         "type": "word",
-        "pron": "fēi",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "fēi"
       }
     ]
   },
@@ -704,33 +528,25 @@
         "id": 18,
         "text": "地",
         "type": "word",
-        "pron": "dì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "dì"
       },
       {
         "id": 107,
         "text": "回",
         "type": "word",
-        "pron": "huí",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "huí"
       },
       {
         "id": 109,
         "text": "分",
         "type": "word",
-        "pron": "fēn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "fēn"
       },
       {
         "id": 517,
         "text": "毛",
         "type": "word",
-        "pron": "máo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "máo"
       }
     ]
   },
@@ -741,33 +557,25 @@
         "id": 24,
         "text": "生",
         "type": "word",
-        "pron": "shēng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shēng"
       },
       {
         "id": 105,
         "text": "长",
         "type": "word",
-        "pron": "cháng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "cháng"
       },
       {
         "id": 305,
         "text": "今",
         "type": "word",
-        "pron": "jīn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "jīn"
       },
       {
         "id": 4,
         "text": "我",
         "type": "word",
-        "pron": "wǒ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "wǒ"
       }
     ]
   },
@@ -778,33 +586,25 @@
         "id": 8,
         "text": "他",
         "type": "word",
-        "pron": "tā",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tā"
       },
       {
         "id": 9,
         "text": "有",
         "type": "word",
-        "pron": "yǒu",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yǒu"
       },
       {
         "id": 32,
         "text": "她",
         "type": "word",
-        "pron": "tā",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tā"
       },
       {
         "id": 22,
         "text": "你",
         "type": "word",
-        "pron": "nǐ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "nǐ"
       }
     ]
   },
@@ -815,33 +615,25 @@
         "id": 7,
         "text": "在",
         "type": "word",
-        "pron": "zài",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zài"
       },
       {
         "id": 30,
         "text": "和",
         "type": "word",
-        "pron": "hé",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "hé"
       },
       {
         "id": 60,
         "text": "看",
         "type": "word",
-        "pron": "kàn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "kàn"
       },
       {
         "id": 2,
         "text": "是",
         "type": "word",
-        "pron": "shì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shì"
       }
     ]
   },
@@ -852,33 +644,25 @@
         "id": 140,
         "text": "见",
         "type": "word",
-        "pron": "jiàn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "jiàn"
       },
       {
         "id": 203,
         "text": "听",
         "type": "word",
-        "pron": "tīng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tīng"
       },
       {
         "id": "ext_22_2",
         "text": "闪",
         "type": "word",
-        "pron": "",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": ""
       },
       {
         "id": 370,
         "text": "坐",
         "type": "word",
-        "pron": "zuò",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zuò"
       }
     ]
   },
@@ -889,25 +673,19 @@
         "id": 248,
         "text": "关",
         "type": "word",
-        "pron": "guān",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "guān"
       },
       {
         "id": 285,
         "text": "立",
         "type": "word",
-        "pron": "lì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "lì"
       },
       {
         "id": 174,
         "text": "气",
         "type": "word",
-        "pron": "qì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "qì"
       }
     ]
   },
@@ -918,25 +696,19 @@
         "id": 59,
         "text": "好",
         "type": "word",
-        "pron": "hǎo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "hǎo"
       },
       {
         "id": 142,
         "text": "问",
         "type": "word",
-        "pron": "wèn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "wèn"
       },
       {
         "id": 70,
         "text": "还",
         "type": "word",
-        "pron": "hái",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "hái"
       }
     ]
   },
@@ -947,33 +719,25 @@
         "id": 161,
         "text": "月",
         "type": "word",
-        "pron": "yuè",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yuè"
       },
       {
         "id": 141,
         "text": "明",
         "type": "word",
-        "pron": "míng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "míng"
       },
       {
         "id": 563,
         "text": "众",
         "type": "word",
-        "pron": "zhòng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zhòng"
       },
       {
         "id": 373,
         "text": "星",
         "type": "word",
-        "pron": "xīng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "xīng"
       }
     ]
   },
@@ -984,33 +748,25 @@
         "id": 21,
         "text": "中",
         "type": "word",
-        "pron": "zhōng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zhōng"
       },
       {
         "id": 36,
         "text": "里",
         "type": "word",
-        "pron": "lǐ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "lǐ"
       },
       {
         "id": 14,
         "text": "来",
         "type": "word",
-        "pron": "lái",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "lái"
       },
       {
         "id": 309,
         "text": "王",
         "type": "word",
-        "pron": "wáng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "wáng"
       }
     ]
   },
@@ -1021,25 +777,19 @@
         "id": 362,
         "text": "早",
         "type": "word",
-        "pron": "zǎo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zǎo"
       },
       {
         "id": 49,
         "text": "对",
         "type": "word",
-        "pron": "duì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "duì"
       },
       {
         "id": "ext_27_2",
         "text": "尖",
         "type": "word",
-        "pron": "",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": ""
       }
     ]
   },
@@ -1050,33 +800,25 @@
         "id": 401,
         "text": "爸",
         "type": "word",
-        "pron": "bà",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "bà"
       },
       {
         "id": 41,
         "text": "家",
         "type": "word",
-        "pron": "jiā",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "jiā"
       },
       {
         "id": 167,
         "text": "全",
         "type": "word",
-        "pron": "quán",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "quán"
       },
       {
         "id": 216,
         "text": "安",
         "type": "word",
-        "pron": "ān",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "ān"
       }
     ],
     "note": "家庭篇。全=人+王；安=宀(宝盖头)+女。"
@@ -1088,33 +830,25 @@
         "id": 10,
         "text": "这",
         "type": "word",
-        "pron": "zhè",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zhè"
       },
       {
         "id": 29,
         "text": "那",
         "type": "word",
-        "pron": "nà",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "nà"
       },
       {
         "id": 121,
         "text": "什",
         "type": "word",
-        "pron": "shén",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shén"
       },
       {
         "id": 56,
         "text": "么",
         "type": "word",
-        "pron": "me",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "me"
       }
     ],
     "note": "指代与提问。学会这四个字，就能指着万物问问题了。"
@@ -1126,33 +860,25 @@
         "id": 187,
         "text": "书",
         "type": "word",
-        "pron": "shū",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shū"
       },
       {
         "id": 150,
         "text": "本",
         "type": "word",
-        "pron": "běn",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "běn"
       },
       {
         "id": 243,
         "text": "字",
         "type": "word",
-        "pron": "zì",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zì"
       },
       {
         "id": 147,
         "text": "文",
         "type": "word",
-        "pron": "wén",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "wén"
       }
     ],
     "note": "学习篇。本=木+一；字=宀+子。"
@@ -1164,33 +890,25 @@
         "id": 716,
         "text": "沙",
         "type": "word",
-        "pron": "shā",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shā"
       },
       {
         "id": "ext_31_1",
         "text": "尘",
         "type": "word",
-        "pron": "",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": ""
       },
       {
         "id": 433,
         "text": "石",
         "type": "word",
-        "pron": "shí",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shí"
       },
       {
         "id": "ext_31_3",
         "text": "岩",
         "type": "word",
-        "pron": "",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": ""
       }
     ],
     "note": "自然逻辑篇。沙=水+少；尘=小+土；岩=山+石。"
@@ -1202,33 +920,25 @@
         "id": 907,
         "text": "休",
         "type": "word",
-        "pron": "xiū",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "xiū"
       },
       {
         "id": 193,
         "text": "体",
         "type": "word",
-        "pron": "tǐ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tǐ"
       },
       {
         "id": 108,
         "text": "位",
         "type": "word",
-        "pron": "wèi",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "wèi"
       },
       {
         "id": "ext_32_3",
         "text": "仙",
         "type": "word",
-        "pron": "",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": ""
       }
     ],
     "note": "单人旁逻辑篇。休=人+木；体=人+本；位=人+立；仙=人+山。"
@@ -1240,33 +950,25 @@
         "id": 51,
         "text": "多",
         "type": "word",
-        "pron": "duō",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "duō"
       },
       {
         "id": 180,
         "text": "太",
         "type": "word",
-        "pron": "tài",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "tài"
       },
       {
         "id": 443,
         "text": "双",
         "type": "word",
-        "pron": "shuāng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shuāng"
       },
       {
         "id": 384,
         "text": "朋",
         "type": "word",
-        "pron": "péng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "péng"
       }
     ],
     "note": "叠字与加点。多=夕+夕；太=大+点；双=又+又；朋=月+月。"
@@ -1278,33 +980,25 @@
         "id": 280,
         "text": "吃",
         "type": "word",
-        "pron": "chī",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "chī"
       },
       {
         "id": 275,
         "text": "叫",
         "type": "word",
-        "pron": "jiào",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "jiào"
       },
       {
         "id": 23,
         "text": "说",
         "type": "word",
-        "pron": "shuō",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shuō"
       },
       {
         "id": 134,
         "text": "话",
         "type": "word",
-        "pron": "huà",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "huà"
       }
     ],
     "note": "嘴巴动作篇。话=讠+舌（舌头）。"
@@ -1316,33 +1010,25 @@
         "id": 66,
         "text": "只",
         "type": "word",
-        "pron": "zhī",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zhī"
       },
       {
         "id": 434,
         "text": "古",
         "type": "word",
-        "pron": "gǔ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "gǔ"
       },
       {
         "id": 115,
         "text": "名",
         "type": "word",
-        "pron": "míng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "míng"
       },
       {
         "id": 42,
         "text": "可",
         "type": "word",
-        "pron": "kě",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "kě"
       }
     ],
     "note": "口字组合篇。只=口+八；古=十+口；名=夕+口；可=丁+口。"
@@ -1354,33 +1040,25 @@
         "id": 247,
         "text": "友",
         "type": "word",
-        "pron": "yǒu",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yǒu"
       },
       {
         "id": 110,
         "text": "爱",
         "type": "word",
-        "pron": "ài",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "ài"
       },
       {
         "id": 284,
         "text": "师",
         "type": "word",
-        "pron": "shī",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "shī"
       },
       {
         "id": 111,
         "text": "老",
         "type": "word",
-        "pron": "lǎo",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "lǎo"
       }
     ],
     "note": "人物关系篇。友=配合'朋'；师=配合'老'。"
@@ -1392,35 +1070,75 @@
         "id": 159,
         "text": "走",
         "type": "word",
-        "pron": "zǒu",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zǒu"
       },
       {
         "id": 172,
         "text": "工",
         "type": "word",
-        "pron": "gōng",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "gōng"
       },
       {
         "id": 782,
         "text": "左",
         "type": "word",
-        "pron": "zuǒ",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "zuǒ"
       },
       {
         "id": 764,
         "text": "右",
         "type": "word",
-        "pron": "yòu",
-        "imageUrl": "",
-        "audioUrl": ""
+        "pron": "yòu"
       }
     ],
     "note": "方位与行动。工=简单的常用字。"
+  },
+  {
+    "id": 38,
+
+    "words": [
+      { "text": "上学", "pron": "shàng xué" },
+      { "text": "写字", "pron": "xiě zì" },
+      { "text": "吃饭", "pron": "chī fàn" },
+      { "text": "用手", "pron": "yòng shǒu" }
+    ],
+    "note": "学校核心词。"
+  },
+  {
+    "id": 39,
+
+    "words": [
+      {"text": "里面", "pron": "lǐ miàn"},
+    {"text": "外面", "pron": "wài miàn"},
+     {"text": "红花", "pron": "hóng huā"},
+     {"text": "出来", "pron": "chū lái"}
+    ],
+    "note": "学校核心词。"
+  },
+  {
+    "id": 40,
+
+    "words": [
+  
+      {"text": "起床", "pron": "qǐ chuáng"},
+    {"text": "洗手", "pron": "xǐ shǒu"},
+    {"text": "学习", "pron": "xué xí"},
+     {"text": "进来", "pron": "jìn lái"},
+
+    {"text": "出去", "pron": "chū qù"}
+    ]
+  }
+  ,
+  {
+    "id": 41,
+
+    "words": [
+  
+     {"text": "同学", "pron": "tóng xué"},
+     {"text": "不哭", "pron": "bù kū"},
+     {"text": "很好", "pron": "hěn hǎo"},
+     {"text": "没有", "pron": "méi yǒu"},
+     {"text": "谢谢", "pron": "xiè xie"}
+    ]
   }
 ]
