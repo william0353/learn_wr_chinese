@@ -3,22 +3,36 @@
     "id": 0,
     "words": [
       {
-        "id": "p0_1",
-        "text": "人们",
-        "type": "phrase",
-        "pron": "rén men"
+        "id": 6,
+        "text": "人",
+        "type": "word",
+        "pron": "rén",
+        "imageUrl": "",
+        "audioUrl": ""
       },
       {
-        "id": "p0_2",
-        "text": "大米",
-        "type": "phrase",
-        "pron": "dà mǐ"
+        "id": 162,
+        "text": "十",
+        "type": "word",
+        "pron": "shí",
+        "imageUrl": "",
+        "audioUrl": ""
       },
       {
-        "id": "p0_3",
-        "text": "火山",
-        "type": "phrase",
-        "pron": "huǒ shān"
+        "id": 366,
+        "text": "火",
+        "type": "word",
+        "pron": "huǒ",
+        "imageUrl": "",
+        "audioUrl": ""
+      },
+      {
+        "id": 448,
+        "text": "米",
+        "type": "word",
+        "pron": "mǐ",
+        "imageUrl": "",
+        "audioUrl": ""
       }
     ]
   },
@@ -26,22 +40,36 @@
     "id": 1,
     "words": [
       {
-        "id": "p1_1",
-        "text": "日本",
-        "type": "phrase",
-        "pron": "rì běn"
+        "id": 94,
+        "text": "日",
+        "type": "word",
+        "pron": "rì",
+        "imageUrl": "",
+        "audioUrl": ""
       },
       {
-        "id": "p1_2",
-        "text": "大山",
-        "type": "phrase",
-        "pron": "dà shān"
+        "id": 189,
+        "text": "水",
+        "type": "word",
+        "pron": "shuǐ",
+        "imageUrl": "",
+        "audioUrl": ""
       },
       {
-        "id": "p1_3",
-        "text": "白云",
-        "type": "phrase",
-        "pron": "bái yún"
+        "id": 266,
+        "text": "山",
+        "type": "word",
+        "pron": "shān",
+        "imageUrl": "",
+        "audioUrl": ""
+      },
+      {
+        "id": 823,
+        "text": "云",
+        "type": "word",
+        "pron": "yún",
+        "imageUrl": "",
+        "audioUrl": ""
       }
     ]
   },
@@ -49,16 +77,36 @@
     "id": 2,
     "words": [
       {
-        "id": "p2_1",
-        "text": "一个",
-        "type": "phrase",
-        "pron": "yī gè"
+        "id": 1,
+        "text": "一",
+        "type": "word",
+        "pron": "yī",
+        "imageUrl": "",
+        "audioUrl": ""
       },
       {
-        "id": "p2_2",
-        "text": "三个",
-        "type": "phrase",
-        "pron": "sān gè"
+        "id": 11,
+        "text": "个",
+        "type": "word",
+        "pron": "gè",
+        "imageUrl": "",
+        "audioUrl": ""
+      },
+      {
+        "id": 170,
+        "text": "二",
+        "type": "word",
+        "pron": "èr",
+        "imageUrl": "",
+        "audioUrl": ""
+      },
+      {
+        "id": 1000,
+        "text": "三",
+        "type": "word",
+        "pron": "sān",
+        "imageUrl": "",
+        "audioUrl": ""
       }
     ]
   },
@@ -634,6 +682,12 @@
         "text": "是",
         "type": "word",
         "pron": "shì"
+      },
+      {
+        "id": "s21",
+        "text": "你和他在家里坐。",
+        "type": "sentence",
+        "pron": ""
       }
     ]
   },
@@ -656,13 +710,19 @@
         "id": "ext_22_2",
         "text": "闪",
         "type": "word",
-        "pron": ""
+        "pron": "shǎn"
       },
       {
         "id": 370,
         "text": "坐",
         "type": "word",
         "pron": "zuò"
+      },
+      {
+        "id": "s22",
+        "text": "我在门口看见他。",
+        "type": "sentence",
+        "pron": ""
       }
     ]
   },
@@ -686,6 +746,12 @@
         "text": "气",
         "type": "word",
         "pron": "qì"
+      },
+      {
+        "id": "s23",
+        "text": "他在门口立着看。",
+        "type": "sentence",
+        "pron": ""
       }
     ]
   },
@@ -709,6 +775,12 @@
         "text": "还",
         "type": "word",
         "pron": "hái"
+      },
+      {
+        "id": "s24",
+        "text": "你好，我想问你话。",
+        "type": "sentence",
+        "pron": ""
       }
     ]
   },
@@ -738,6 +810,12 @@
         "text": "星",
         "type": "word",
         "pron": "xīng"
+      },
+      {
+        "id": "s25",
+        "text": "天上月明，还有星星。",
+        "type": "sentence",
+        "pron": ""
       }
     ]
   },
@@ -767,6 +845,12 @@
         "text": "王",
         "type": "word",
         "pron": "wáng"
+      },
+      {
+        "id": "s26",
+        "text": "我从外面来到家里。",
+        "type": "sentence",
+        "pron": ""
       }
     ]
   },
@@ -789,6 +873,12 @@
         "id": "ext_27_2",
         "text": "尖",
         "type": "word",
+        "pron": "jiān"
+      },
+      {
+        "id": "s27",
+        "text": "我今天早早起床了。",
+        "type": "sentence",
         "pron": ""
       }
     ]
@@ -819,6 +909,12 @@
         "text": "安",
         "type": "word",
         "pron": "ān"
+      },
+      {
+        "id": "s28",
+        "text": "我和爸爸在家里坐。",
+        "type": "sentence",
+        "pron": ""
       }
     ],
     "note": "家庭篇。全=人+王；安=宀(宝盖头)+女。"
@@ -849,6 +945,12 @@
         "text": "么",
         "type": "word",
         "pron": "me"
+      },
+      {
+        "id": "s29",
+        "text": "你看，这是什么东西？",
+        "type": "sentence",
+        "pron": ""
       }
     ],
     "note": "指代与提问。学会这四个字，就能指着万物问问题了。"
@@ -879,6 +981,12 @@
         "text": "文",
         "type": "word",
         "pron": "wén"
+      },
+      {
+        "id": "s30",
+        "text": "我在家里看一本书。",
+        "type": "sentence",
+        "pron": ""
       }
     ],
     "note": "学习篇。本=木+一；字=宀+子。"
@@ -896,7 +1004,7 @@
         "id": "ext_31_1",
         "text": "尘",
         "type": "word",
-        "pron": ""
+        "pron": "chén"
       },
       {
         "id": 433,
@@ -908,10 +1016,15 @@
         "id": "ext_31_3",
         "text": "岩",
         "type": "word",
+        "pron": "yán"
+      },
+      {
+        "id": "s31",
+        "text": "山上有很多大石头。",
+        "type": "sentence",
         "pron": ""
       }
-    ],
-    "note": "自然逻辑篇。沙=水+少；尘=小+土；岩=山+石。"
+    ]
   },
   {
     "id": 32,
@@ -938,6 +1051,12 @@
         "id": "ext_32_3",
         "text": "仙",
         "type": "word",
+        "pron": "xiān"
+      },
+      {
+        "id": "s32",
+        "text": "我在家里好好休息。",
+        "type": "sentence",
         "pron": ""
       }
     ],
@@ -969,6 +1088,12 @@
         "text": "朋",
         "type": "word",
         "pron": "péng"
+      },
+      {
+        "id": "s33",
+        "text": "我们有很多好朋友。",
+        "type": "sentence",
+        "pron": ""
       }
     ],
     "note": "叠字与加点。多=夕+夕；太=大+点；双=又+又；朋=月+月。"
@@ -999,6 +1124,12 @@
         "text": "话",
         "type": "word",
         "pron": "huà"
+      },
+      {
+        "id": "s34",
+        "text": "我想说一句好话。",
+        "type": "sentence",
+        "pron": ""
       }
     ],
     "note": "嘴巴动作篇。话=讠+舌（舌头）。"
@@ -1029,6 +1160,12 @@
         "text": "可",
         "type": "word",
         "pron": "kě"
+      },
+      {
+        "id": "s35",
+        "text": "他有一个好名字。",
+        "type": "sentence",
+        "pron": ""
       }
     ],
     "note": "口字组合篇。只=口+八；古=十+口；名=夕+口；可=丁+口。"
@@ -1059,6 +1196,12 @@
         "text": "老",
         "type": "word",
         "pron": "lǎo"
+      },
+      {
+        "id": "s36",
+        "text": "我爱我的好老师。",
+        "type": "sentence",
+        "pron": ""
       }
     ],
     "note": "人物关系篇。友=配合'朋'；师=配合'老'。"
@@ -1089,56 +1232,132 @@
         "text": "右",
         "type": "word",
         "pron": "yòu"
+      },
+      {
+        "id": "s37",
+        "text": "我从左边走到右边。",
+        "type": "sentence",
+        "pron": ""
       }
     ],
     "note": "方位与行动。工=简单的常用字。"
   },
   {
     "id": 38,
-
     "words": [
-      { "text": "上学", "pron": "shàng xué" },
-      { "text": "写字", "pron": "xiě zì" },
-      { "text": "吃饭", "pron": "chī fàn" },
-      { "text": "用手", "pron": "yòng shǒu" }
+      {
+        "text": "上学",
+        "pron": "shàng xué"
+      },
+      {
+        "text": "写字",
+        "pron": "xiě zì"
+      },
+      {
+        "text": "吃饭",
+        "pron": "chī fàn"
+      },
+      {
+        "text": "用手",
+        "pron": "yòng shǒu"
+      },
+      {
+        "id": "s38",
+        "text": "我每天上学写字用手。",
+        "type": "sentence",
+        "pron": ""
+      }
     ],
     "note": "学校核心词。"
   },
   {
     "id": 39,
-
     "words": [
-      {"text": "里面", "pron": "lǐ miàn"},
-    {"text": "外面", "pron": "wài miàn"},
-     {"text": "红花", "pron": "hóng huā"},
-     {"text": "出来", "pron": "chū lái"}
+      {
+        "text": "里面",
+        "pron": "lǐ miàn"
+      },
+      {
+        "text": "外面",
+        "pron": "wài miàn"
+      },
+      {
+        "text": "红花",
+        "pron": "hóng huā"
+      },
+      {
+        "text": "出来",
+        "pron": "chū lái"
+      },
+      {
+        "id": "s39",
+        "text": "我从里面慢慢走出来。",
+        "type": "sentence",
+        "pron": ""
+      }
     ],
     "note": "学校核心词。"
   },
   {
     "id": 40,
-
     "words": [
-  
-      {"text": "起床", "pron": "qǐ chuáng"},
-    {"text": "洗手", "pron": "xǐ shǒu"},
-    {"text": "学习", "pron": "xué xí"},
-     {"text": "进来", "pron": "jìn lái"},
-
-    {"text": "出去", "pron": "chū qù"}
+      {
+        "text": "起床",
+        "pron": "qǐ chuáng"
+      },
+      {
+        "text": "洗手",
+        "pron": "xǐ shǒu"
+      },
+      {
+        "text": "学习",
+        "pron": "xué xí"
+      },
+      {
+        "text": "进来",
+        "pron": "jìn lái"
+      },
+      {
+        "text": "出去",
+        "pron": "chū qù"
+      },
+      {
+        "id": "s40",
+        "text": "我早上起床先洗手。",
+        "type": "sentence",
+        "pron": ""
+      }
     ]
-  }
-  ,
+  },
   {
     "id": 41,
-
     "words": [
-  
-     {"text": "同学", "pron": "tóng xué"},
-     {"text": "不哭", "pron": "bù kū"},
-     {"text": "很好", "pron": "hěn hǎo"},
-     {"text": "没有", "pron": "méi yǒu"},
-     {"text": "谢谢", "pron": "xiè xie"}
+      {
+        "text": "同学",
+        "pron": "tóng xué"
+      },
+      {
+        "text": "不哭",
+        "pron": "bù kū"
+      },
+      {
+        "text": "很好",
+        "pron": "hěn hǎo"
+      },
+      {
+        "text": "没有",
+        "pron": "méi yǒu"
+      },
+      {
+        "text": "谢谢",
+        "pron": "xiè xie"
+      },
+      {
+        "id": "s41",
+        "text": "我的同学都很好谢谢你。",
+        "type": "sentence",
+        "pron": ""
+      }
     ]
   }
 ]

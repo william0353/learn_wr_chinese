@@ -75,6 +75,43 @@
         background-repeat: no-repeat;
       }
 
+      /* 句子临摹样式 */
+      .sentence-row {
+        margin-top: 20px;
+        border-top: 1px dashed #ccc;
+        padding-top: 15px;
+        page-break-inside: avoid;
+      }
+
+      .sentence-label {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 5px;
+      }
+
+      .sentence-trace {
+        font-family: "kai", sans-serif;
+        font-size: 40px;
+        line-height: 1.5;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 10px;
+        padding-bottom: 5px;
+      }
+
+      .sentence-original {
+        color: #000;
+        margin-bottom: 15px;
+      }
+
+      .sentence-faint {
+        color: #e0e0e0;
+      }
+
+      .sentence-empty {
+        height: 60px;
+        border-bottom: 1px solid #ccc;
+      }
+
       .practice-sheet {
         color: rgb(102, 102, 102);
       }
@@ -378,6 +415,7 @@
             selectedLesson: -1,
             customWords: "",
             selectedWords: [],
+            selectedSentences: [], // 新增：保存选中的句子
             allItemsMap: {},
             isRecommending: false,
             recommendationInfo: "",
@@ -386,6 +424,7 @@
         async mounted() {
           await initDB();
           await this.loadData();
+          await this.autoSelectSentence(); // 自动选择上一课句子
           this.updateCurrentDate();
         },
         methods: {
@@ -409,6 +448,34 @@
               console.error("数据加载失败:", error);
             }
           },
+          async autoSelectSentence() {
+            try {
+              const completedLessons = await learningManager.getCompletedLessons();
+              const completedIds = new Set(completedLessons.map((l) => l.lessonId));
+
+              // 寻找第一个尚未标记为"完成"的课程 (正在学习的课)
+              let currentStudying = 0;
+              for (let i = 0; i < this.lessons.length; i++) {
+                if (!completedIds.has(i)) {
+                  currentStudying = i;
+                  break;
+                }
+              }
+
+              // 句子选择为正在学习的课 - 1 (即最后一课完成的)
+              const targetLessonId = currentStudying - 1;
+
+              if (targetLessonId >= 0 && this.lessons[targetLessonId]) {
+                const lesson = this.lessons[targetLessonId];
+                this.selectedSentences = lesson.words
+                  .filter((w) => w.type === "sentence")
+                  .map((w) => w.text);
+                console.log(`[Sheet] 自动选择已完成的第 ${targetLessonId + 1} 课句子`);
+              }
+            } catch (error) {
+              console.error("自动选择句子失败:", error);
+            }
+          },
           loadLessonWords() {
             if (this.selectedLesson >= 0 && this.lessons.length > 0) {
               const lesson = this.lessons[this.selectedLesson];
@@ -417,6 +484,10 @@
                 (w.text || "").split(""),
               );
               this.selectedWords = [...new Set(allChars)];
+              // 提取本课句子
+              this.selectedSentences = lesson.words
+                .filter(w => w.type === 'sentence')
+                .map(w => w.text);
               this.customWords = "";
             }
           },
@@ -429,6 +500,7 @@
             } else {
               if (this.selectedLesson === -1) {
                 this.selectedWords = [];
+                this.selectedSentences = [];
               }
             }
           },
@@ -478,6 +550,38 @@
 
               content.appendChild(line);
             });
+
+            // 如果有句子，添加句子临摹区域
+            if (this.selectedSentences && this.selectedSentences.length > 0) {
+              this.selectedSentences.forEach((sentence) => {
+                const sRow = document.createElement("div");
+                sRow.className = "sentence-row";
+
+                const label = document.createElement("div");
+                label.className = "sentence-label";
+                label.textContent = "句子临摹：";
+                sRow.appendChild(label);
+
+                // 第一行：示范句 (黑色)
+                const sOriginal = document.createElement("div");
+                sOriginal.className = "sentence-trace sentence-original";
+                sOriginal.textContent = sentence;
+                sRow.appendChild(sOriginal);
+
+                // 第二行：描摹句 (灰色)
+                const sFaint = document.createElement("div");
+                sFaint.className = "sentence-trace sentence-faint";
+                sFaint.textContent = sentence;
+                sRow.appendChild(sFaint);
+
+                // 第三行：空白行供书写
+                const sEmpty = document.createElement("div");
+                sEmpty.className = "sentence-empty";
+                sRow.appendChild(sEmpty);
+
+                content.appendChild(sRow);
+              });
+            }
           },
           printSheet() {
             this.generateSheet();
@@ -537,6 +641,7 @@
               }
 
               this.selectedWords = [...new Set(recommendedWords)]; // 去重
+              await this.autoSelectSentence(); // 智能推荐时也带上上一课的句子
               this.customWords = this.selectedWords.join("");
               this.selectedLesson = -1;
 

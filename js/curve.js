@@ -14,7 +14,7 @@
 // ---- SRS 参数 ----
 // 刚学完，第二天第三天也要学习
 const SRS_INTERVALS = [0, 1, 1, 3, 7, 15, 30, 60, 120, 180, 365];
-const MAX_TOTAL_QUESTIONS = 15; // 本次总题量上限
+const MAX_TOTAL_QUESTIONS = 20; // 本次总题量上限
 
 /**
  * 确保数据项具有所有必要字段，用于迁移和兼容
@@ -52,12 +52,13 @@ function forgettingProb(item, nowMs) {
 /**
  * 在一次测试后更新 SRS 参数
  * @param {HanziItem} item
- * @param {boolean} correct
+ * @param {string|boolean} result    'correct' (or true), 'wrong' (or false), 'blurry'
  * @param {number} nowMs
  */
-function updateAfterAnswer(item, correct, nowMs) {
+function updateAfterAnswer(item, result, nowMs) {
   ensureDefaults(item);
-  if (correct) {
+
+  if (result === "correct" || result === true) {
     // 答对了
     // 特殊情况：如果是第一次测试（历史为空）且当前等级为 0，说明是熟词，直接跳级到 Level 3 (约 15 天)
     if (item.level === 0 && (!item.history || item.history.length === 0)) {
@@ -76,6 +77,10 @@ function updateAfterAnswer(item, correct, nowMs) {
         : SRS_INTERVALS[SRS_INTERVALS.length - 1];
 
     item.nextReviewAt = nowMs + intervalDays * 24 * 60 * 60 * 1000;
+  } else if (result === "blurry") {
+    // 模糊：Level 不变，下次学习 +1 天
+    // 不重置错误次数，也不增加等级
+    item.nextReviewAt = nowMs + 1 * 24 * 60 * 60 * 1000;
   } else {
     // 答错了
     item.level = 0;
@@ -84,7 +89,7 @@ function updateAfterAnswer(item, correct, nowMs) {
     item.nextReviewAt = nowMs; // 答错后立即（今天）再次复习
   }
   item.last_ts = nowMs;
-  item.history.push({ ts: nowMs, correct });
+  item.history.push({ ts: nowMs, result: String(result) });
   return item;
 }
 
@@ -95,7 +100,7 @@ function updateAfterAnswer(item, correct, nowMs) {
  * @param {number} nowMs              当前时间戳
  * @returns {HanziItem[]}             本次测试列表
  */
-function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
+function selectForSession(allItems, currentLesson, nowMs = Date.now(), limit = MAX_TOTAL_QUESTIONS) {
   const items = allItems.map(ensureDefaults);
 
   // 1) 排序：优先选择没有历史记录的（从没测试过的），其次按 nextReviewAt 排序
@@ -112,11 +117,15 @@ function selectForSession(allItems, currentLesson, nowMs = Date.now()) {
   });
 
   // 2) 打印调试信息
-  const due = sorted.filter((it) => it.nextReviewAt <= nowMs);
-  console.log(`[SRS] 到期需复习: ${due.length} 个, 总库存: ${items.length} 个`);
+  const newWords = sorted.filter(it => !it.history || it.history.length === 0);
+  const reviewWords = sorted.filter(it => it.history && it.history.length > 0);
+  const due = reviewWords.filter((it) => it.nextReviewAt <= nowMs);
+  
+  console.log(`[SRS] 候选池详情: 新词=${newWords.length}, 复习词=${reviewWords.length} (其中已到期=${due.length})`);
+  console.log(`[SRS] 最终从候选池取出前 ${limit} 个作为备选`);
 
-  // 3) 返回前 MAX_TOTAL_QUESTIONS 个
-  return sorted.slice(0, MAX_TOTAL_QUESTIONS);
+  // 3) 返回前 limit 个
+  return sorted.slice(0, limit);
 }
 
 // 辅助函数

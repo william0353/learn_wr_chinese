@@ -148,7 +148,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="(word, index) in currentWords"
+                    v-for="(word, index) in filteredWords"
                     :key="word.id"
                     @click="selectWord(word, index)"
                     :class="{ 'selected-row': selectedIndex === index }"
@@ -183,6 +183,27 @@
                   </tr>
                 </tbody>
               </table>
+
+              <!-- 句子展示区 (如果有句子) -->
+              <div v-if="sentences.length > 0" class="mt-4">
+                <div class="card border-info">
+                  <div class="card-header bg-info text-white">
+                    <i class="bi bi-chat-quote"></i> 本课金句
+                  </div>
+                  <div class="card-body">
+                    <div 
+                      v-for="(s, sIdx) in sentences" 
+                      :key="s.id"
+                      class="mb-3 p-2 border-bottom cursor-pointer"
+                      @click="selectSentence(s)"
+                      :class="{'bg-light': selectedWord.id === s.id}"
+                    >
+                      <div class="chinese-text h5 mb-1">{{ s.text }}</div>
+                      <div v-if="s.pron" class="text-muted small">{{ s.pron }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="col-lg-9 col-md-8 mx-auto">
@@ -215,7 +236,7 @@
                     </p>
                     <div class="mb-3">
                       <button
-                        v-if="!isWordLearned(selectedWord)"
+                        v-if="selectedWord.type !== 'sentence' && !isWordLearned(selectedWord)"
                         @click="learnWord(selectedWord)"
                         :disabled="learningWord"
                         class="btn btn-primary btn-lg"
@@ -224,7 +245,7 @@
                         <i class="bi bi-hourglass-split spin" v-else></i>
                         {{ learningWord ? '处理中...' : '学习此内容' }}
                       </button>
-                      <div v-else>
+                      <div v-else-if="selectedWord.type !== 'sentence'">
                         <button class="btn btn-outline-success btn-lg" disabled>
                           <i class="bi bi-check-circle"></i> 已加入复习
                         </button>
@@ -236,6 +257,9 @@
                             >本周学习</span
                           >
                         </div>
+                      </div>
+                      <div v-else class="alert alert-light border">
+                        <i class="bi bi-info-circle"></i> 句子仅供朗读练习
                       </div>
                     </div>
                     <small class="text-muted"
@@ -301,6 +325,14 @@
             learnedItemsMap: {}, // 字符 -> 学习记录
             learningWord: false,
           };
+        },
+        computed: {
+          filteredWords() {
+            return this.currentWords.filter(w => w.type !== 'sentence');
+          },
+          sentences() {
+            return this.currentWords.filter(w => w.type === 'sentence');
+          }
         },
         async mounted() {
           await initDB(); // 初始化数据库
@@ -496,6 +528,11 @@
             this.selectedWord = word;
             this.selectedIndex = index;
             this.audioErrorMessage = ""; // 重置音频错误信息
+          },
+          selectSentence(sentence) {
+            this.selectedWord = sentence;
+            this.selectedIndex = -1; // 取消左侧表格的选中高亮
+            this.audioErrorMessage = "";
           },
           audioError(event) {
             this.audioErrorMessage = "音频文件暂未准备";
