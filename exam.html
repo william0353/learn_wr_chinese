@@ -182,13 +182,13 @@
                     </td>
                     <td class="align-middle">
                       <div class="btn-group btn-group-sm result-btn-group d-flex" role="group">
-                        <input type="radio" class="btn-check" :name="'res_' + word.id + '_' + index" :id="'ok_' + word.id + '_' + index" value="correct" v-model="word.result" :disabled="isRecentSubmitted || isSrsSubmitted">
+                        <input type="radio" class="btn-check" :name="'res_' + word.id + '_' + index" :id="'ok_' + word.id + '_' + index" value="correct" v-model="word.result" :disabled="isRecentSubmitted">
                         <label class="btn btn-outline-success" :for="'ok_' + word.id + '_' + index">正确</label>
 
-                        <input type="radio" class="btn-check" :name="'res_' + word.id + '_' + index" :id="'blur_' + word.id + '_' + index" value="blurry" v-model="word.result" :disabled="isRecentSubmitted || isSrsSubmitted">
+                        <input type="radio" class="btn-check" :name="'res_' + word.id + '_' + index" :id="'blur_' + word.id + '_' + index" value="blurry" v-model="word.result" :disabled="isRecentSubmitted">
                         <label class="btn btn-outline-warning" :for="'blur_' + word.id + '_' + index">模糊</label>
 
-                        <input type="radio" class="btn-check" :name="'res_' + word.id + '_' + index" :id="'err_' + word.id + '_' + index" value="wrong" v-model="word.result" :disabled="isRecentSubmitted || isSrsSubmitted">
+                        <input type="radio" class="btn-check" :name="'res_' + word.id + '_' + index" :id="'err_' + word.id + '_' + index" value="wrong" v-model="word.result" :disabled="isRecentSubmitted">
                         <label class="btn btn-outline-danger" :for="'err_' + word.id + '_' + index">错误</label>
                       </div>
                     </td>
@@ -245,13 +245,13 @@
                     </td>
                     <td class="align-middle">
                       <div class="btn-group btn-group-sm result-btn-group d-flex" role="group">
-                        <input type="radio" class="btn-check" :name="'srs_res_' + word.id + '_' + index" :id="'srs_ok_' + word.id + '_' + index" value="correct" v-model="word.result" :disabled="isRecentSubmitted || isSrsSubmitted">
+                        <input type="radio" class="btn-check" :name="'srs_res_' + word.id + '_' + index" :id="'srs_ok_' + word.id + '_' + index" value="correct" v-model="word.result" :disabled="isSrsSubmitted">
                         <label class="btn btn-outline-success" :for="'srs_ok_' + word.id + '_' + index">正确</label>
 
-                        <input type="radio" class="btn-check" :name="'srs_res_' + word.id + '_' + index" :id="'srs_blur_' + word.id + '_' + index" value="blurry" v-model="word.result" :disabled="isRecentSubmitted || isSrsSubmitted">
+                        <input type="radio" class="btn-check" :name="'srs_res_' + word.id + '_' + index" :id="'srs_blur_' + word.id + '_' + index" value="blurry" v-model="word.result" :disabled="isSrsSubmitted">
                         <label class="btn btn-outline-warning" :for="'srs_blur_' + word.id + '_' + index">模糊</label>
 
-                        <input type="radio" class="btn-check" :name="'srs_res_' + word.id + '_' + index" :id="'srs_err_' + word.id + '_' + index" value="wrong" v-model="word.result" :disabled="isRecentSubmitted || isSrsSubmitted">
+                        <input type="radio" class="btn-check" :name="'srs_res_' + word.id + '_' + index" :id="'srs_err_' + word.id + '_' + index" value="wrong" v-model="word.result" :disabled="isSrsSubmitted">
                         <label class="btn btn-outline-danger" :for="'srs_err_' + word.id + '_' + index">错误</label>
                       </div>
                     </td>
