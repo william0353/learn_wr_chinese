@@ -175,7 +175,7 @@
                         @error="audioError"
                       >
                         <source
-                          :src="'sound/' + word.id + '.mp3'"
+                          :src="'sound/' + (word.resourceId || word.id) + '.mp3'"
                           type="audio/mpeg"
                         />
                       </audio>
@@ -238,7 +238,7 @@
                         @error="audioError"
                       >
                         <source
-                          :src="'sound/' + word.id + '.mp3'"
+                          :src="'sound/' + (word.resourceId || word.id) + '.mp3'"
                           type="audio/mpeg"
                         />
                       </audio>
@@ -366,35 +366,25 @@
               lessons.forEach((lesson) => {
                 if (lesson.words) {
                   lesson.words.forEach((w) => {
-                    // 保存原始单词信息
+                    // 保存原始词/字的信息 (用于通过原始 ID 查找)
                     map[w.id] = w;
 
-                    // 构建字符字典
+                    // 构建字符字典，用于通过字符查找其元数据 (拼音、音频 ID 等)
                     if (w.text) {
                       const wordPron = w.pron || "[无音]";
-                      if (w.text.length === 1) {
-                        // 单个字
-                        cDict[w.text] = {
-                          id: w.id,
-                          text: w.text,
-                          pron: wordPron
-                        };
-                      } else {
-                        // 词组：尝试拆分拼音
-                        const chars = w.text.split("");
-                        const prons = wordPron.split(/\s+/); // 按空格拆分拼音
-                        
-                        chars.forEach((char, idx) => {
-                          // 只有在字典里没有该字时才添加，或者优先保留单字记录
-                          if (!cDict[char] || w.text.length === 1) {
-                            cDict[char] = {
-                              id: w.id + "_" + idx, // 临时生成一个 ID
-                              text: char,
-                              pron: prons[idx] || prons[0] || "[无音]"
-                            };
-                          }
-                        });
-                      }
+                      const chars = w.text.split("");
+                      const prons = wordPron.split(/\s+/); 
+                      
+                      chars.forEach((char, idx) => {
+                        // 优先保留单字记录作为该字的元数据来源
+                        if (!cDict[char] || w.text.length === 1) {
+                          cDict[char] = {
+                            resourceId: w.id, // 使用原始 word ID 作为图片/音频资源 ID
+                            text: char,
+                            pron: prons[idx] || prons[0] || "[无音]"
+                          };
+                        }
+                      });
                     }
                   });
                 }
@@ -477,31 +467,26 @@
           },
           mapItemsToWords(items) {
             return items.map((item) => {
-              const originalId = item.id;
-              let wordInfo = this.allItemsMap[originalId];
+              const char = item.char || item.id;
+              const dictEntry = this.charDictionary[char];
               
-              if (!wordInfo) {
-                // 尝试从字符字典找 (兼容拆分后的单字)
-                const dictEntry = this.charDictionary[originalId] || this.charDictionary[item.char];
-                if (dictEntry) {
-                  wordInfo = {
-                    id: dictEntry.id,
-                    text: dictEntry.text,
-                    pron: dictEntry.pron,
-                    type: "word"
-                  };
-                }
-              }
-
-              if (!wordInfo) {
-                console.warn(`[Exam] 映射失败: 字符 "${item.char}" (ID: ${originalId}) 在 allItemsMap 和 charDictionary 中均未找到`);
-                return null;
+              if (!dictEntry) {
+                console.warn(`[Exam] 映射失败: 字符 "${char}" (ID: ${item.id}) 在字典中未找到`);
+                // 至少保留基础信息
+                return {
+                  id: item.id,
+                  text: char,
+                  pron: "[无音]",
+                  hanziItem: item,
+                  result: 'correct'
+                };
               }
 
               return {
-                ...wordInfo,
-                text: item.char || wordInfo.text,
-                pron: wordInfo.pron || "[无音]",
+                id: item.id, // 这里通常就是 char 本身
+                resourceId: dictEntry.resourceId, // 资源文件 ID
+                text: char,
+                pron: dictEntry.pron,
                 hanziItem: item,
                 result: 'correct'
               };

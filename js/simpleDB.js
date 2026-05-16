@@ -165,19 +165,18 @@ class HanziLearningManager {
   }
 
   // 创建汉字学习记录
-  async createHanziItem(id, char, lesson) {
+  async createHanziItem(char, lesson) {
     const now = Date.now();
     const item = {
-      id: `${lesson}_${id}`, // 使用课程和字符ID组合
+      id: char, // ID 就是汉字本身
       char: char,
       lesson: lesson,
+      created_at: now,
       last_ts: now,
       nextReviewAt: now, // 新学的汉字都是今天复习
       level: 0, // 初始等级为0
       mistakeCount: 0, // 初始错误次数为0
       isLeech: false, // 初始非leech
-      stability_days: 1.0, // 保留旧字段以兼容
-      ease: 2.0, // 保留旧字段以兼容
       history: [],
     };
 
