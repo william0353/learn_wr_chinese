@@ -507,7 +507,7 @@
         "id": 1009,
         "text": "虫",
         "type": "word",
-        "pron": ""
+        "pron": "chóng"
       }
     ]
   },
@@ -1357,6 +1357,146 @@
         "text": "我的同学都很好谢谢你。",
         "type": "sentence",
         "pron": ""
+      }
+    ]
+  },
+  {
+    "id": 42,
+    "words": [
+      {
+        "text": "句",
+        "pron": "jù",
+        "type": "word"
+      },
+      {
+        "text": "舌",
+        "pron": "shé",
+        "type": "word"
+      },
+      {
+        "text": "市",
+        "pron": "shì",
+        "type": "word"
+      },
+      {
+        "text": "从",
+        "pron": "cóng",
+        "type": "word"
+      }
+    ]
+  },
+  {
+    "id": 43,
+    "words": [
+      {
+        "text": "比",
+        "pron": "bǐ",
+        "type": "word"
+      },
+      {
+        "text": "午",
+        "pron": "wǔ",
+        "type": "word"
+      },
+      {
+        "text": "半",
+        "pron": "bàn",
+        "type": "word"
+      },
+      {
+        "text": "斤",
+        "pron": "jīn",
+        "type": "word"
+      }
+    ]
+  },
+  {
+    "id": 44,
+    "words": [
+      {
+        "text": "平",
+        "pron": "píng",
+        "type": "word"
+      },
+      {
+        "text": "舟",
+        "pron": "zhōu",
+        "type": "word"
+      },
+      {
+        "text": "闪",
+        "pron": "shǎn",
+        "type": "word"
+      },
+      {
+        "text": "间",
+        "pron": "jiān",
+        "type": "word"
+      }
+    ]
+  },
+  {
+    "id": 45,
+    "words": [
+      {
+        "text": "因",
+        "pron": "yīn",
+        "type": "word"
+      },
+      {
+        "text": "为",
+        "pron": "wèi",
+        "type": "word"
+      },
+      {
+        "text": "阳",
+        "pron": "yáng",
+        "type": "word"
+      },
+      {
+        "text": "样",
+        "pron": "yàng",
+        "type": "word"
+      }
+    ]
+  },
+  {
+    "id": 46,
+    "words": [
+      {
+        "text": "玩",
+        "pron": "wán",
+        "type": "word"
+      },
+      {
+        "text": "猫",
+        "pron": "māo",
+        "type": "word"
+      },
+      {
+        "text": "狗",
+        "pron": "gǒu",
+        "type": "word"
+      },
+      {
+        "text": "包",
+        "pron": "bāo",
+        "type": "word"
+      }
+    ]
+  },
+  {
+    "id": 47,
+    "words": [
+      {
+        "text": "跑",
+        "pron": "pǎo",
+        "type": "word"
+      },
+      {
+        "text": "跳",
+        "pron": "tiào",
+        "type": "word"
       }
     ]
   }
